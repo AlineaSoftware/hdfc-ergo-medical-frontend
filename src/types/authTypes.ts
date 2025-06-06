@@ -1,0 +1,34 @@
+export type SignInFormFields = {
+  username: string
+  password: string
+  token: string
+}
+
+export type SignInFormForSalesFields = {
+  proposal_no: string
+}
+
+export type SignUpFormFields = {
+  name: string
+  person_name: string
+  email: string
+  contact_no: string
+  type: any
+  permission: boolean
+}
+
+export type ForgetPassFields = {
+  emailId: string
+}
+
+export type ResetPasswordFields = {
+  newPassword: string
+  confirmPassword: string
+  loginId: number
+}
+
+export type SalesLogin = {
+  proposalNum: string
+  deviceType: string
+  notificationToken: string
+}
