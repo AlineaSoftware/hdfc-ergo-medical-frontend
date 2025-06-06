@@ -67,10 +67,8 @@ const ManualEmpanelmentPage = (props: Props) => {
   //default controls
   const defaultControls = {
     search: '',
-    currentPage: 1,
-    limitPerPage: limitOfPage,
-    sortParam: 'createdAt',
-    sortOrder: -1,
+    page: 1,
+    per_page: 10,
   }
 
   // Record and Control States

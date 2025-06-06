@@ -57,8 +57,9 @@ const SalesTeamData = ({
   controls,
 }: Props) => {
   const defaultControls = {
+    search: '',
     page: 1,
-    per_page: limitOfPage,
+    per_page: 10,
   }
 
   const [entity, setEntity] = useState<any | undefined>()

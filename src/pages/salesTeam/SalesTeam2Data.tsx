@@ -27,6 +27,7 @@ type Props = {
   controls: any
 }
 const defaultControls = {
+  search: '',
   page: 1,
   per_page: 10,
 }

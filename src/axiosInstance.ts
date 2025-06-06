@@ -55,7 +55,7 @@ const logOut = async () => {
     encryptedData: encryptDetails(JSON.stringify({ payload }), VITE_APP_SECRET_KEY),
   }
   try {
-    const response = await fetch(VITE_APP_API_URL + AUTH_ENDPOINT.logOut, {
+    const response = await fetch(VITE_APP_API_URL + AUTH_ENDPOINT.Logout, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
