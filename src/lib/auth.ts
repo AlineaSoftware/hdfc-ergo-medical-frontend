@@ -135,19 +135,10 @@ export const salesLogin = async (
   }
 }
 
-export const logOutUser = async (
-  loading: LoadingState['setLoading'],
-  toast: ShowToastFunction,
-  data: any,
-) => {
+export const logoutUser = async (loading: LoadingState['setLoading'], toast: ShowToastFunction) => {
   try {
     loading({ isLoading: true, isPage: false })
-
-    // const requestBody = {
-    //   encryptedData: encryptDetails(JSON.stringify({ ...formData, token }), VITE_APP_SECRET_KEY),
-    // }
-
-    const res = await axiosUnAuth.post(AUTH_ENDPOINT.logOut, data)
+    const res = await axiosInstance.get(AUTH_ENDPOINT.Logout)
     if (res.data.status === 400) {
       toast('error', res.data.message)
     }

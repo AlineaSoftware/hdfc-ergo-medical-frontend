@@ -34,7 +34,7 @@ import Logo from '/hdfc-ergo-logo.jpg'
 import LifeConnectLogo from '/Life-connect.jpg'
 import { medicalTeamTypes } from 'src/data/loginData'
 import { VITE_APP_SECRET_KEY } from 'src/utils/envVariables'
-import { logOutUser } from 'src/lib/auth'
+import { logoutUser } from 'src/lib/auth'
 
 type Props = {
   open: boolean
@@ -166,7 +166,7 @@ const Header = ({ open, setOpen }: Props) => {
       const requestBody = {
         encryptedData: encryptDetails(JSON.stringify({ payload }), VITE_APP_SECRET_KEY),
       }
-      const res = await logOutUser(setLoading, showToast, requestBody)
+      const res = await logoutUser(setLoading, showToast)
 
       if (res?.status) {
         clearStorage()

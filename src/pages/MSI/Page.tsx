@@ -135,59 +135,12 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
 
   const download = async () => {
     try {
-      downloadExcel(
-        [
-          { id: 'requestdate', name: 'Request Date' },
-          { id: 'proposalno', name: 'Proposal No' },
-          { id: 'policyrelno', name: 'Policy Rel No' },
-          { id: 'proposername', name: 'Proposer Name' },
-          { id: 'insuredname', name: 'Insured Name' },
-          { id: 'age', name: 'Age' },
-          { id: 'gender', name: 'Gender' },
-          { id: 'productname', name: 'Product Name' },
-          { id: 'suminsured', name: 'Sum Insured' },
-          { id: 'insureddob', name: 'Insured DOB' },
-          { id: 'height', name: 'Height' },
-          { id: 'weight', name: 'Weight' },
-          { id: 'address', name: 'Address' },
-          { id: 'proposercity', name: 'Proposer City' },
-          { id: 'state', name: 'State' },
-          { id: 'zone', name: 'Zone' },
-          { id: 'callingdates', name: 'Calling Dates' },
-          { id: 'finalstatus', name: 'Final Status' },
-          { id: 'iareason', name: 'IA Reason' },
-          { id: 'iaremark', name: 'IA Remark' },
-          { id: 'iaremarkdatetime', name: 'IA Remark DateTime' },
-          { id: 'customerrequested', name: 'Customer Requested' },
-          { id: 'customerrequesteddatetime', name: 'Customer Requested DateTime' },
-          { id: 'finalstatusdatetime', name: 'Final Status DateTime' },
-          { id: 'verificationoutcometechnical', name: 'Verification Outcome Technical' },
-          {
-            id: 'verificationoutcomemedicallifestyle',
-            name: 'Verification Outcome Medical Lifestyle',
-          },
-          { id: 'conditionname', name: 'Condition Name' },
-          { id: 'technicaldetails', name: 'Technical Details' },
-          { id: 'technicaldetailsremark', name: 'Technical Details Remark' },
-          { id: 'doctorfinalremark', name: 'Doctor Final Remark' },
-          { id: 'calltype', name: 'Call Type' },
-          { id: 'callername', name: 'Caller Name' },
-          { id: 'department', name: 'Department' },
-          { id: 'noofattempts', name: 'No. of Attempts' },
-          { id: 'senttoqcdatetime', name: 'Sent to QC DateTime' },
-          { id: 'teleproposerid', name: 'Teleproposer ID' },
-          { id: 'noncontactablereason', name: 'Non Contactable Reason' },
-          { id: 'endtoendtat', name: 'End to End Tat' },
-          { id: 'firstcallattemptdate', name: 'First Call Attempt Date' },
-          { id: 'finalclosuredate', name: 'Final Closure Date' },
-        ],
-        data === undefined ? [] : data,
-        'MISDetails',
-        'MISDetails',
-        showToast,
-      )
-
-      // console.log(response)
+      debugger
+      const res = await downloadExcel(setLoading, showToast, {})
+      console.log({ res })
+      if (res) {
+        alert('Excel file downloaded successfully!')
+      }
     } catch (error) {
       return {}
     }

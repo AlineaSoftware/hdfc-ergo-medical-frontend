@@ -124,6 +124,7 @@ export type HeadCell = {
   isCopy?: any
   isCheck?: boolean
   valueGetter?: any
+  render?: any
 }
 
 export const enum HEADER_BTN {

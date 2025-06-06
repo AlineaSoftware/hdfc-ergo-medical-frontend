@@ -63,10 +63,8 @@ const BulkReport = ({
   //default controls
   const defaultControls = {
     search: '',
-    currentPage: 1,
-    limitPerPage: 20,
-    sortParam: 'createdAt',
-    sortOrder: -1,
+    page: 1,
+    per_page: 10,
   }
 
   // Record and Control States
@@ -150,23 +148,23 @@ const BulkReport = ({
 
   const getData = async (data) => {
     const token = localStorage.getItem('token')
-    const response = await MedicalBulkReport(setLoading, showToast, setNotFound, notFound, {
+    const response = await MedicalBulkReport(setLoading, showToast, {
       ...handleControls,
-      startDate: data?.startDate ? formatDate(data.startDate) : '',
-      endDate: data?.endDate ? formatDate(data.endDate) : '',
-      division: data?.division ?? '',
-      token: token,
+      // startDate: data?.startDate ? formatDate(data.startDate) : '',
+      // endDate: data?.endDate ? formatDate(data.endDate) : '',
+      // division: data?.division ?? '',
+      // token: token,
     })
 
     // Handle the response data
     if (response) {
-      const { getClosedBulk, ...rest } = response
-      if (getClosedBulk.length === 0) {
+      const { data, ...rest } = response
+      if (data.length === 0) {
         setNotFound([TABLES.BULK_REPORT])
       } else {
         setNotFound([])
-        setData(getClosedBulk)
-        setSelectedId(getClosedBulk[0]?.requestID)
+        setData(data)
+        setSelectedId(data[0]?.requestID)
         setControls(rest)
       }
     } else {
@@ -199,10 +197,10 @@ const BulkReport = ({
 
   const headCells: HeadCell[] = [
     {
-      id: 'requestId',
+      id: 'requestID',
       label: 'Request Id',
       isSort: false,
-      width: 80,
+      width: 60,
       type: 'checkBox',
       isCheck: true,
     },
@@ -232,17 +230,18 @@ const BulkReport = ({
       width: 80,
     },
     {
-      id: 'appointmentDate',
+      id: 'apptDateTime',
       label: 'Appointment Date',
       isSort: false,
       width: 80,
     },
-    {
-      id: 'appointmentTime',
-      label: 'Appointment Time',
-      isSort: false,
-      width: 80,
-    },
+    // {
+    //   id: 'apptDateTime',
+    //   label: 'Appointment Time',
+    //   isSort: false,
+    //   width: 80,
+    //   render: (row: any) => console.log({ row }),
+    // },
     {
       id: 'closerDate',
       label: 'Closer Date',
@@ -306,14 +305,14 @@ const BulkReport = ({
   return (
     <>
       <Box>
-        <div className='flex justify-between'>
+        {/* <div className='flex justify-between'>
           <div>
             <h1 className='font-medium text-2xl pt-5 pb-5'>Bulk Report</h1>
           </div>
-        </div>
+        </div> */}
         <div className='shadow-[0_4px_8px_rgba(0,0,0,0.25)] rounded-md'>
           <form onSubmit={handleSubmit(onSubmitHandle)}>
-            <div>
+            <div className='flex justify-between items-center p-3 bg-white-main rounded-t-md'>
               <div className='flex justify-around items-center  p-3'>
                 <DateTimeInput
                   clearErrors={clearErrors}
@@ -345,8 +344,8 @@ const BulkReport = ({
                   } // One day after start date
                   showClearButton={false}
                 />
-                <RadioInput name='division' label='Division' control={control} radios={radios} />
               </div>
+              <RadioInput name='division' label='Division' control={control} radios={radios} />
               <div className='h-[10%] text-center flex justify-center p-3'>
                 <Button color='mBlue' sx={{ color: theme.palette.mWhite.main }} type='submit'>
                   Search

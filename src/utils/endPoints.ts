@@ -4,7 +4,7 @@ export const enum AUTH_ENDPOINT {
   ForgotPassword = '/HDFCERGO/ValidateEmail',
   ResetPassword = '/HDFCERGO/ChangePassword',
   salesLogin = '/sales/auth/login',
-  logOut = '/HDFCERGO/logout',
+  Logout = '/admin/auth/logout',
   HardLogOut = '/HDFCERGO/HardLogout',
 }
 
@@ -19,17 +19,22 @@ export const enum SALES_DETAILS {
 }
 
 export const enum MEDICAL_DETAILS {
-  getMedicalUserDetails = '/HDFCERGO/GetMedicalDashboardCases',
+  getMedicalUserDetails = '/medical/cases/list',
   getMedicalUserAllDetails = '/HDFCERGO/GetUserMedicalDetails',
   getMedicalUserInsuredMedicalDetails = '/HDFCERGO/GetInsurerMedicalDetails',
   getMedicalCallDetails = '/HDFCERGO/GetCallMedicalDetails',
   getMedicalDispositionDetails = '/HDFCERGO/GetCallMedicalDispositions',
   getMedicalDCDetails = '/HDFCERGO/GetDCDetails',
-  getMedicalBulkReport = '/HDFCERGO/GetClosedBulkReport',
+  getMedicalBulkReport = '/medical/report/list',
   getMedicalBulkReportZip = '/HDFCERGO/DownloadPdfs/DownloadPdfs',
   getMedicalAudioDownload = '/HDFCERGO/DownloadAudio/DownloadAudio',
   getMSIDetails = '/HDFCERGO/GetMISDetails',
 }
+
+export enum MSI {
+  Export_Excel = 'medical/mis/export',
+}
+
 export const enum EMPANELMENT_REQUEST {
   Pincode = '/other/search-pincode',
   Empanelment_Send = '/ticket/create',

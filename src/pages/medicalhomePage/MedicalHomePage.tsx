@@ -40,10 +40,8 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
   //default controls
   const defaultControls = {
     search: '',
-    currentPage: 1,
-    limitPerPage: limitOfPage,
-    sortParam: '',
-    sortOrder: -1,
+    page: 1,
+    per_page: 10,
   }
 
   // Record and Control States
@@ -91,21 +89,20 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
 
   const getData = async (data) => {
     const token = localStorage.getItem('token')
-    const response = await getAllMedicalUserDetails(setLoading, showToast, setNotFound, notFound, {
+    const response = await getAllMedicalUserDetails(setLoading, showToast, {
       ...handleControls,
-      startDate: data?.startDate ? formatDate(data.startDate) : '',
-      endDate: data?.endDate ? formatDate(data.endDate) : '',
-      division: data?.division ?? '',
-      token: token,
+      // fromDate: data?.startDate ? formatDate(data.startDate) : '',
+      // toDate: data?.endDate ? formatDate(data.endDate) : '',
+      // tpaName: data?.division ?? '',
     })
 
     if (response) {
-      const { getMedicalDashboardCasesData, ...rest } = response
-      if (getMedicalDashboardCasesData.length === 0) {
+      const { data, ...rest } = response
+      if (data.length === 0) {
         setNotFound([TABLES.MEDICAL_CHECK])
       } else {
         setNotFound([])
-        setData(getMedicalDashboardCasesData)
+        setData(data)
         setControls(rest)
       }
     } else {
@@ -143,7 +140,7 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
 
   const headCells: HeadCell[] = [
     {
-      id: 'requesttime',
+      id: 'createdAt',
       label: 'Request Time',
       isSort: false,
       width: 80,
@@ -162,50 +159,50 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
       width: 80,
     },
     {
-      id: 'uniqueId',
+      id: 'uniqueIdNum',
       label: 'Unique Id',
       isSort: false,
       width: 80,
     },
     {
-      id: 'proposeName',
+      id: 'proposerName',
       label: 'Proposer Name',
       isSort: false,
       width: 80,
     },
     {
-      id: 'insured',
+      id: 'insuredName',
       label: 'Insured',
       isSort: false,
       width: 80,
     },
     {
-      id: 'division',
+      id: 'tpaName',
       label: 'Division',
       isSort: false,
       width: 80,
     },
     {
-      id: 'test',
+      id: 'testCategory',
       label: 'Tests',
       isSort: false,
       width: 80,
     },
     {
-      id: 'currentStatus',
+      id: 'status',
       label: 'Current Status',
       isSort: false,
       width: 80,
     },
     {
-      id: 'mobileNo',
+      id: 'contactNo',
       label: 'Mobile No / Alternative No',
       isSort: false,
       width: 80,
       type: 'maskingMobileNo',
     },
     {
-      id: 'tat',
+      id: 'tatInDays',
       label: 'TAT',
       isSort: false,
       width: 50,
@@ -227,15 +224,15 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
   return (
     <>
       <Box>
-        <div className='flex justify-between'>
+        {/* <div className='flex justify-between'>
           <div>
             <h1 className='font-medium text-2xl pt-5 pb-5'>Dashboard</h1>
           </div>
-        </div>
+        </div> */}
         <div className='shadow-[0_4px_8px_rgba(0,0,0,0.25)] rounded-md'>
           <form onSubmit={handleSubmit(onSubmitHandle)}>
-            <div>
-              <div className='flex justify-around items-center  p-3'>
+            <div className='flex justify-between items-center p-3 bg-white-main rounded-t-md'>
+              <div className='flex justify-around items-center space-x-2 p-3'>
                 <DateInput
                   clearErrors={clearErrors}
                   control={control}
@@ -244,7 +241,7 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
                   name='startDate'
                   setError={setError}
                   validation={dateSelectValidation('From Date', true)}
-                  sx={{ minWidth: '350px' }}
+                  sx={{ minWidth: '250px' }}
                   showClearButton={false}
                   minDate={startOfYear(new Date(2024, 0, 1))}
                 />
@@ -256,12 +253,12 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
                   name='endDate'
                   setError={setError}
                   validation={dateSelectValidation('To Date', true)}
-                  sx={{ minWidth: '350px' }}
+                  sx={{ minWidth: '250px' }}
                   minDate={new Date(startDateWatch) || null}
                   showClearButton={false}
                 />
-                <RadioInput name='division' label='Division' control={control} radios={radios} />
               </div>
+              <RadioInput name='division' label='Division' control={control} radios={radios} />
               <div className='h-[10%] text-center flex justify-center p-3'>
                 <Button color='mBlue' sx={{ color: theme.palette.mWhite.main }} type='submit'>
                   Search

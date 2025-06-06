@@ -9,35 +9,28 @@ import {
 } from 'src/types/medicalTypes'
 import { encryptDetails, TABLES } from 'src/utils/constants'
 import { VITE_APP_SECRET_KEY } from 'src/utils/envVariables'
+import { COMMON_MESSAGE } from 'src/utils/commonMessages'
 
 export const getAllMedicalUserDetails = async (
   loading: LoadingState['setLoading'],
   toast: ShowToastFunction,
-  notFound: NotFoundState['setNotFound'],
-  notFoundArray: NotFoundState['notFound'],
-  handleControls: any,
+  params: Record<string, any>,
 ) => {
   try {
     loading({ isLoading: true, isPage: false })
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify(handleControls), VITE_APP_SECRET_KEY),
-    }
+    const url = `${MEDICAL_DETAILS.getMedicalUserDetails}?${new URLSearchParams(params).toString()}`
 
-    const res = await axiosInstance.post(MEDICAL_DETAILS.getMedicalUserDetails, requestBody)
-    if (res?.data?.success) {
-      if (res?.data?.length === 0) {
-        notFound([...notFoundArray, TABLES.MEDICAL_CHECK])
-      } else {
-        notFound([])
-      }
-      return res?.data
+    const res = await axiosInstance.get(url)
+    if (res?.data?.status === 400) {
+      toast('error', res.data.message)
     } else {
-      notFound([...notFoundArray, TABLES.MEDICAL_CHECK])
+      toast('success', COMMON_MESSAGE.Submit)
     }
+    return res?.data
   } catch (error: any) {
     console.log(error)
-    if (error?.response?.status === 404) {
-      notFound([...notFoundArray, TABLES.MEDICAL_CHECK])
+    if (error.response.status === 400) {
+      toast('error', error.response.data.message)
     } else {
       toast('error', error.response.statusText)
     }
@@ -233,31 +226,24 @@ export const DCDetailsForMedicalDetails = async (
 export const MedicalBulkReport = async (
   loading: LoadingState['setLoading'],
   toast: ShowToastFunction,
-  notFound: NotFoundState['setNotFound'],
-  notFoundArray: NotFoundState['notFound'],
-  handleControls: any,
+  params: Record<string, any>,
 ) => {
   try {
     loading({ isLoading: true, isPage: false })
 
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify(handleControls), VITE_APP_SECRET_KEY),
-    }
-    const res = await axiosInstance.post(MEDICAL_DETAILS.getMedicalBulkReport, requestBody)
-    if (res?.data?.success) {
-      if (res?.data?.length === 0) {
-        notFound([...notFoundArray, TABLES.BULK_REPORT])
-      } else {
-        notFound([])
-      }
-      return res?.data
+    const url = `${MEDICAL_DETAILS.getMedicalBulkReport}?${new URLSearchParams(params).toString()}`
+
+    const res = await axiosInstance.get(url)
+    if (res?.data?.status === 400) {
+      toast('error', res.data.message)
     } else {
-      notFound([...notFoundArray, TABLES.BULK_REPORT])
+      toast('success', COMMON_MESSAGE.Submit)
     }
+    return res?.data
   } catch (error: any) {
     console.log(error)
-    if (error?.response?.status === 404) {
-      notFound([...notFoundArray, TABLES.BULK_REPORT])
+    if (error.response.status === 400) {
+      toast('error', error.response.data.message)
     } else {
       toast('error', error.response.statusText)
     }

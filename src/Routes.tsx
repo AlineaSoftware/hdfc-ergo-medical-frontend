@@ -78,18 +78,18 @@ const AppRoutes = ({}: Props) => {
         ''
       )}
 
-      {userRole === 'Download' ? (
-        <Route
-          path='/bulk-report'
-          element={
-            <DashBoardLayout>
-              <BulkReportDePage />
-            </DashBoardLayout>
-          }
-        />
-      ) : (
+      {/* {userRole === 'Download' ? ( */}
+      <Route
+        path='/bulk-report'
+        element={
+          <DashBoardLayout>
+            <BulkReportDePage />
+          </DashBoardLayout>
+        }
+      />
+      {/* ) : (
         <Route path='/bulk-report' element={<Navigate to='/login' />} />
-      )}
+      )} */}
 
       {/* {userRole === 'Download' ? (
         <Route
@@ -104,7 +104,7 @@ const AppRoutes = ({}: Props) => {
         <Route path='/bulk-report' element={<Navigate to='/dashboard' />} />
       )} */}
 
-      {isAuthenticated && !sales ? (
+      {authParams?.isAuth && !sales ? (
         <Route
           path='/Mis'
           element={
