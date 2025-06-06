@@ -87,6 +87,7 @@ const OpenRequestList = ({
       password: '',
     },
   })
+  console.log("----------", data)
 
   const getData = async () => {
     const response = await getOpenRequest(
