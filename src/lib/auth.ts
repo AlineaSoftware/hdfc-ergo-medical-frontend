@@ -15,16 +15,10 @@ export const loginUser = async (
   loading: LoadingState['setLoading'],
   toast: ShowToastFunction,
   formData: SignInFormFields,
-  token: string,
 ) => {
   try {
     loading({ isLoading: true, isPage: false })
-
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify({ ...formData, token }), VITE_APP_SECRET_KEY),
-    }
-
-    const res = await axiosUnAuth.post(AUTH_ENDPOINT.Login, requestBody)
+    const res = await axiosUnAuth.post(AUTH_ENDPOINT.Login, formData)
     if (res.data.status === 400) {
       toast('error', res.data.message)
     }

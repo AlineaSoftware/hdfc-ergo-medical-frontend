@@ -218,7 +218,7 @@ const Header = ({ open, setOpen }: Props) => {
               HDFC ERGO
             </span>
             <div className='flex gap-5 ml-5'>
-              {roleWiseHeader?.map((x) => {
+              {HeadingList?.map((x) => {
                 return (
                   <span
                     className={`text-md font-medium hover:underline hover:decoration-darkBlue-main ${x?.path?.split('/')[1] === lastSegment ? 'underline decoration-darkBlue-main' : ''} text-black-main `}

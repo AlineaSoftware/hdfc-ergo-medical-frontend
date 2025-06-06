@@ -39,7 +39,7 @@ const AppRoutes = ({}: Props) => {
         </>
       )}
 
-      {isAuthenticated && !sales ? (
+      {authParams?.isAuth && !sales ? (
         <Route
           path='/dashboard'
           element={

@@ -20,6 +20,7 @@ import { useState } from 'react'
 import CachedSharpIcon from '@mui/icons-material/CachedSharp'
 import { v4 as uuidv4 } from 'uuid'
 import CaptchaCanvas from '@/components/CaptchaCanvas'
+import { ERoutePaths } from 'src/utils/routeConstants'
 
 interface Props {}
 
@@ -29,6 +30,7 @@ const LogIn = ({}: Props) => {
   const nav = useNavigate()
   const { setLoading } = useLoading()
   const showToast = useToast()
+  const { addStorage } = useAuth()
 
   // const [isCaptchaVerified, setIsCaptchaVerified] = useState(false)
 
@@ -37,7 +39,7 @@ const LogIn = ({}: Props) => {
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      username: '',
+      email: '',
       password: '',
     },
   })
@@ -48,41 +50,53 @@ const LogIn = ({}: Props) => {
     //   return
     // }
 
-    if (captchaInput !== captcha) {
-      showToast('error', 'Incorrect CAPTCHA. Please try again.')
-      setCaptcha(generateCaptcha()) // Reset CAPTCHA
-      setCaptchaInput('') // Clear input field
-      return
+    // if (captchaInput !== captcha) {
+    //   showToast('error', 'Incorrect CAPTCHA. Please try again.')
+    //   setCaptcha(generateCaptcha()) // Reset CAPTCHA
+    //   setCaptchaInput('') // Clear input field
+    //   return
+    // }
+    const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/i
+    const isThisEmail = emailRegex.test(data?.email)
+    const payload = {
+      ...(isThisEmail ? { email: data?.email } : { contactCode: data?.email }),
+      password: data?.password,
+      deviceType: 'WEB',
+      notificationToken: '',
     }
 
-    const token = uuidv4()
-    const res = await loginUser(setLoading, showToast, data, token)
-
-    if (res?.data?.isLoginValid) {
-      showToast('success', res?.data?.loginMessage)
-      localStorage.setItem('users', JSON.stringify(res?.data))
-      localStorage.setItem('token', JSON.stringify(token))
-      nav('/dashboard')
-    } else {
-      if (res?.data?.loginMessage === 'Your session is already running. Logout from all devices.') {
-        const confirmLogout = window.confirm(res?.data?.loginMessage)
-
-        if (confirmLogout) {
-          const payload = {
-            username: data?.username,
-          }
-          const hardLogout = await HardLogOutUser(setLoading, showToast, {
-            payload,
-          })
-          if (hardLogout?.status) {
-            showToast('success', 'Successfully logged out from other session. Please log in again.')
-            nav('/login') // Redirect to login after successful logout
-          }
-        }
-      } else {
-        showToast('info', res?.data?.loginMessage)
-      }
+    // const token = uuidv4()
+    const res = await loginUser(setLoading, showToast, payload)
+    if (res) {
+      const token = res?.accessToken
+      addStorage(token)
+      nav(ERoutePaths.Dashboard)
     }
+    // if (res?.data?.isLoginValid) {
+    //   showToast('success', res?.data?.loginMessage)
+    //   localStorage.setItem('users', JSON.stringify(res?.data))
+    //   localStorage.setItem('token', JSON.stringify(token))
+    //   nav('/dashboard')
+    // } else {
+    //   if (res?.data?.loginMessage === 'Your session is already running. Logout from all devices.') {
+    //     const confirmLogout = window.confirm(res?.data?.loginMessage)
+
+    //     if (confirmLogout) {
+    //       const payload = {
+    //         username: data?.username,
+    //       }
+    //       const hardLogout = await HardLogOutUser(setLoading, showToast, {
+    //         payload,
+    //       })
+    //       if (hardLogout?.status) {
+    //         showToast('success', 'Successfully logged out from other session. Please log in again.')
+    //         nav('/login') // Redirect to login after successful logout
+    //       }
+    //     }
+    //   } else {
+    //     showToast('info', res?.data?.loginMessage)
+    //   }
+    // }
   }
 
   return (
@@ -97,11 +111,11 @@ const LogIn = ({}: Props) => {
         <form onSubmit={handleSubmit(onSubmitHandle)}>
           <TxtInput
             control={control}
-            name='username'
+            name='email'
             handleChange={() => {}}
-            placeholder='Enter username'
+            placeholder='Enter email or contact code'
             sx={{ minWidth: 300, marginBottom: '10px' }}
-            label='Username*'
+            label='Email*'
             validation={txtFieldValidation(true, 'txtArea')}
             autoComplete={true}
           />
@@ -116,7 +130,7 @@ const LogIn = ({}: Props) => {
             autoComplete={true}
           />
           {/* Numeric CAPTCHA */}
-          <div className='captcha-container mb-3 flex items-center gap-4 bg-gray-200 p-3 rounded-lg'>
+          {/* <div className='captcha-container mb-3 flex items-center gap-4 bg-gray-200 p-3 rounded-lg'>
             <CaptchaCanvas captcha={captcha}></CaptchaCanvas>
 
             <CachedSharpIcon
@@ -133,7 +147,7 @@ const LogIn = ({}: Props) => {
               className='px-3 py-2 border border-gray-300 rounded w-[150px] md:w-[200px] flex-1'
               required
             />
-          </div>
+          </div> */}
 
           <div className='text-center flex flex-col gap-2 mb-5'>
             <Button
@@ -154,6 +168,9 @@ const LogIn = ({}: Props) => {
           >
             Forgot password?
           </Button>
+          <div className='text-center text-sm text-blue-main cursor-pointer mt-4'>
+            <p onClick={() => nav('/sales-login')}>Move to Sales portal</p>
+          </div>
         </form>
       </div>
     </div>

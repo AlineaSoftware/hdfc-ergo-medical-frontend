@@ -1,7 +1,9 @@
 export type SignInFormFields = {
-  username: string
+  email?: string
+  contactCode?: string
   password: string
-  token: string
+  deviceType?: string
+  notificationToken?: string
 }
 
 export type SignInFormForSalesFields = {

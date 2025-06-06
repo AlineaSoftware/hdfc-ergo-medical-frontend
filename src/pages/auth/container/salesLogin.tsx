@@ -71,6 +71,9 @@ const SalesLogIn = ({}: Props) => {
               Login
             </Button>
           </div>
+          <div className='text-center text-sm text-blue-main cursor-pointer'>
+            <p onClick={() => nav('/login')}>Move to Medical portal</p>
+          </div>
         </form>
       </div>
     </div>
