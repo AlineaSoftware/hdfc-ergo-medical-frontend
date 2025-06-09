@@ -35,6 +35,7 @@ type Props = {
   handleClose: () => void
   setSelectedId: Dispatch<SetStateAction<number>>
   selectedId: number
+  state?: any
 }
 const MedicalDetailsPage = ({
   handleOpen,
@@ -44,6 +45,7 @@ const MedicalDetailsPage = ({
   handleClose,
   setSelectedId,
   selectedId,
+  state,
 }: Props) => {
   //default controls
   const defaultControls = {
@@ -59,42 +61,37 @@ const MedicalDetailsPage = ({
   const [handleControls, setHandleControls] = useState<HandleControls>(defaultControls)
   const { setNotFound, notFound } = useNotFound()
   const navigate = useNavigate()
-  const location = useLocation()
   const { setLoading } = useLoading()
   const showToast = useToast()
 
   const getUserData = async () => {
-    const loginValue = location?.state?.proposalNo
+    const loginValue = state?.proposalNo
     const token = localStorage.getItem('token')
     if (loginValue) {
-      const response = await getMedicalUserDetails(setLoading, showToast, {
-        loginDetails: loginValue,
-        token: token,
-      })
+      const response = await getMedicalUserDetails(setLoading, showToast, state?._id, {})
 
       if (response) {
-        const { getUserMedicalList, ...rest } = response
+        const { data } = response
 
-        if (getUserMedicalList?.length === 0) {
+        if (data?.length === 0) {
           setNotFound([TABLES.SALES_CHECK])
         } else {
           // Logic to auto-copy audio value if some audio is empty then
-          for (let i = 0; i < getUserMedicalList?.length; i++) {
-            for (let j = i + 1; j < getUserMedicalList.length; j++) {
-              if (getUserMedicalList[i].proposalNo === getUserMedicalList[j].proposalNo) {
-                if (getUserMedicalList[i].audio && !getUserMedicalList[j].audio) {
-                  getUserMedicalList[j].audio = getUserMedicalList[i].audio
-                } else if (!getUserMedicalList[i].audio && getUserMedicalList[j].audio) {
-                  getUserMedicalList[i].audio = getUserMedicalList[j].audio
-                }
-              }
-            }
-          }
+          // for (let i = 0; i < data?.length; i++) {
+          //   for (let j = i + 1; j < data.length; j++) {
+          //     if (data[i].proposalNo === data[j].proposalNo) {
+          //       if (data[i].audio && !data[j].audio) {
+          //         data[j].audio = data[i].audio
+          //       } else if (!data[i].audio && data[j].audio) {
+          //         data[i].audio = data[j].audio
+          //       }
+          //     }
+          //   }
+          // }
 
           setNotFound([])
-          setData(getUserMedicalList)
-          setSelectedId(getUserMedicalList[0]?.requestID)
-          setControls(rest)
+          setData(data)
+          setSelectedId(data[0]?._id)
         }
       } else {
         setData([])
@@ -107,15 +104,15 @@ const MedicalDetailsPage = ({
   }, [])
   const headCells: HeadCell[] = [
     {
-      id: 'requestDate',
+      id: 'createdAt',
       label: 'Request Date/Time',
       isSort: false,
       width: 150,
-      type: 'date12hour',
+      type: 'formatDateDDMMYYYYTIMEFunction',
     },
 
     {
-      id: 'requestID',
+      id: 'requestId',
       label: 'Request Id',
       isSort: false,
       width: 90,
@@ -133,33 +130,33 @@ const MedicalDetailsPage = ({
       width: 80,
     },
     {
-      id: 'proposalName',
+      id: 'proposerName',
       label: 'Proposer Name',
       isSort: false,
       width: 150,
     },
     {
-      id: 'insured',
+      id: 'insuredName',
       label: 'Insured',
       isSort: false,
       width: 150,
     },
 
     {
-      id: 'insurerDivisionName',
+      id: 'tpaName',
       label: 'Division',
       isSort: false,
       width: 50,
     },
 
     {
-      id: 'medicalTests',
+      id: 'testCategory',
       label: 'Tests',
       isSort: false,
       width: 50,
     },
     {
-      id: 'currentstatus',
+      id: 'status',
       label: 'Current Status',
       isSort: false,
       width: 130,
@@ -174,7 +171,7 @@ const MedicalDetailsPage = ({
   ]
   const user = JSON.parse(localStorage.getItem('users'))
   const handleRowClick = (row: any) => {
-    setSelectedId(row?.requestID)
+    setSelectedId(row?._id)
   }
 
   const handleDownLoadAudio = async (item) => {
@@ -220,7 +217,7 @@ const MedicalDetailsPage = ({
   return (
     <Box>
       <div className='flex justify-between items-center'>
-        <h1 className='font-medium text-2xl pt-5 pb-5'>{location?.state?.division} Case History</h1>
+        <h1 className='font-medium text-2xl pt-5 pb-5'>{state?.tpaName} Case History</h1>
         {/* <h1 className='font-medium text-2xl pt-5 pb-5'>Tele MER Case History</h1> */}
         {/* <form onSubmit={handleSubmit(onSubmitHandle */}
         <div className='text-center flex justify-center p-3'>
@@ -228,7 +225,7 @@ const MedicalDetailsPage = ({
             color='mBlue'
             sx={{ color: theme.palette.mWhite.main }}
             onClick={() => {
-              window.history.go(-1)
+              navigate('/dashboard')
             }}
           >
             Back
@@ -248,18 +245,14 @@ const MedicalDetailsPage = ({
             controls={controls as Controls}
             handleControls={handleControls}
             setHandleControls={setHandleControls}
-            actions={
-              user.designation === EUserRoleHDFcErgo.LinkingTeam
-                ? [ACTIONS_TABLE.DOWNLOAD_REPORT, ACTIONS_TABLE.PLAY, ACTIONS_TABLE.DOWNLOAD_AUDIO]
-                : []
-            }
+            actions={[]}
             tableHeading={{
               tableId: TABLES.NEW_REQUEST,
               tableName: 'Tele MER Case',
             }}
             notFound={notFound.includes(TABLES.NEW_REQUEST)}
             btnTxtArray={[]}
-            isTableWithOutAction={user.designation === EUserRoleHDFcErgo.LinkingTeam ? false : true}
+            isTableWithOutAction={true}
             redirectPath={'/dashboard/medicalDetailsPage'}
             onRowClick={handleRowClick}
             selectedId={selectedId}

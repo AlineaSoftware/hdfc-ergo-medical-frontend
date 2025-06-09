@@ -20,7 +20,8 @@ export const enum SALES_DETAILS {
 
 export const enum MEDICAL_DETAILS {
   getMedicalUserDetails = '/medical/cases/list',
-  getMedicalUserAllDetails = '/HDFCERGO/GetUserMedicalDetails',
+  getMedicalUserAllDetails = '/medical/cases/proposal-list',
+  getMedicalUserOtherDetails = '/medical/cases/proposal-detail',
   getMedicalUserInsuredMedicalDetails = '/HDFCERGO/GetInsurerMedicalDetails',
   getMedicalCallDetails = '/HDFCERGO/GetCallMedicalDetails',
   getMedicalDispositionDetails = '/HDFCERGO/GetCallMedicalDispositions',

@@ -52,6 +52,9 @@ export const getSalesList = async (
     console.log(error)
     if (error.response.status === 400) {
       toast('error', error.response.data.message)
+    } else if (error.response.status === 401) {
+      toast('error', 'Unauthorized access. Please log in again.')
+      localStorage.clear()
     } else {
       toast('error', error.response.statusText)
     }
@@ -80,9 +83,11 @@ export const getAllDetails = async (
     }
     return res.data
   } catch (error: any) {
-    console.log(error)
     if (error.response.status === 400) {
       toast('error', error.response.data.message)
+    } else if (error.response.status === 401) {
+      toast('error', 'Unauthorized access. Please log in again.')
+      localStorage.clear()
     } else {
       toast('error', error.response.statusText)
     }
@@ -159,6 +164,9 @@ export const callDispositions = async (
     console.log(error)
     if (error.response.status === 400) {
       toast('error', error.response.data.message)
+    } else if (error.response.status === 401) {
+      toast('error', 'Unauthorized access. Please log in again.')
+      localStorage.clear()
     } else {
       toast('error', error.response.statusText)
     }
@@ -187,6 +195,9 @@ export const proposerStatus = async (
     console.log(error)
     if (error.response.status === 400) {
       toast('error', error.response.data.message)
+    } else if (error.response.status === 401) {
+      toast('error', 'Unauthorized access. Please log in again.')
+      localStorage.clear()
     } else {
       toast('error', error.response.statusText)
     }

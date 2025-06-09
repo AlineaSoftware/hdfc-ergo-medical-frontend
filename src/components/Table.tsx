@@ -313,11 +313,11 @@ const CustomTable = ({
         <TableFooterControls
           handlePage={handlePage}
           handleRowsPerPage={handleRowsPerPage}
-          numberOfPages={controls.pages}
-          from={controls.from}
-          to={controls.to}
+          numberOfPages={controls.last_page}
+          from={controls.current_page}
+          to={controls.current_page}
           total={controls.total}
-          currentPage={controls.currentPage}
+          currentPage={controls.current_page}
           handleControls={handleControls}
           notFound={notFound}
         />

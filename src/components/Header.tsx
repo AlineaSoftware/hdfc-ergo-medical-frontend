@@ -141,6 +141,8 @@ const Header = ({ open, setOpen }: Props) => {
   const { user, clearStorage } = useAuth()
   const users = JSON.parse(localStorage.getItem('users'))
   const sales = JSON.parse(localStorage.getItem('sales'))
+  const salesRedirectRaw = localStorage.getItem('salesRedirect')
+  const salesRedirect = salesRedirectRaw ? JSON.parse(salesRedirectRaw) : null
 
   const showName = users ? users?.loginName : 'Sales Portal'
 
@@ -217,22 +219,24 @@ const Header = ({ open, setOpen }: Props) => {
             >
               HDFC ERGO
             </span>
-            <div className='flex gap-5 ml-5'>
-              {HeadingList?.map((x) => {
-                return (
-                  <span
-                    className={`text-md font-medium hover:underline hover:decoration-darkBlue-main ${x?.path?.split('/')[1] === lastSegment ? 'underline decoration-darkBlue-main' : ''} text-black-main `}
-                    role='button'
-                    onClick={() => {
-                      nav(x?.path)
-                    }}
-                    key={Math.random()}
-                  >
-                    {x?.title}
-                  </span>
-                )
-              })}
-            </div>
+            {salesRedirect === null && (
+              <div className='flex gap-5 ml-5'>
+                {HeadingList?.map((x) => {
+                  return (
+                    <span
+                      className={`text-md font-medium hover:underline hover:decoration-darkBlue-main ${x?.path?.split('/')[1] === lastSegment ? 'underline decoration-darkBlue-main' : ''} text-black-main `}
+                      role='button'
+                      onClick={() => {
+                        nav(x?.path)
+                      }}
+                      key={Math.random()}
+                    >
+                      {x?.title}
+                    </span>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
           {/* Center the LifeConnect logo */}
