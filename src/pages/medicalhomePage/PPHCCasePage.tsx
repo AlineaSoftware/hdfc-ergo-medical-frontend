@@ -80,10 +80,7 @@ const PPHCCasePage = ({
     const loginValue = location?.state?.proposalNo
     const token = localStorage.getItem('token')
     if (loginValue) {
-      const response = await getMedicalUserDetails(setLoading, showToast, {
-        loginDetails: loginValue,
-        token: token,
-      })
+      const response = await getMedicalUserDetails(setLoading, showToast, location?.state?._id, {})
       //  console.log(response, 'response')
 
       if (response) {
