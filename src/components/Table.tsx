@@ -93,7 +93,7 @@ const CustomTable = ({
   DownLoadReport,
 }: Props) => {
   const nav = useNavigate()
-  console.log({ rows })
+
   // Actions
 
   //Create

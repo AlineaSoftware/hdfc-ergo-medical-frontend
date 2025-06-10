@@ -103,8 +103,8 @@ const TableHeader = ({
                       checked={
                         rows?.length > 0
                           ? _.isEqual(
-                              selectedRows?.map((x) => x?.requestId),
-                              rows?.map((x) => x?.requestId),
+                              selectedRows?.map((x) => x?.requestID),
+                              rows?.map((x) => x?.requestID),
                             )
                           : false
                       }

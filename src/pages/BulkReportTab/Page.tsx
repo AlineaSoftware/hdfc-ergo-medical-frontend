@@ -164,14 +164,27 @@ const BulkReport = ({
 
     // Handle the response data
     if (response) {
-      const { data, ...rest } = response
+      const { data, pagination } = response
+      const { total, per_page, current_page, last_page } = pagination
       if (data.length === 0) {
         setNotFound([TABLES.BULK_REPORT])
+        setData([])
+        setControls({
+          total,
+          per_page,
+          current_page,
+          last_page,
+        })
       } else {
         setNotFound([])
         setData(data)
         setSelectedId(data[0]?.requestID)
-        setControls(rest)
+        setControls({
+          total,
+          per_page,
+          current_page,
+          last_page,
+        })
       }
     } else {
       setData([])
@@ -194,8 +207,8 @@ const BulkReport = ({
     console.log({ a })
     getData({
       ...data,
-      startDate: format(a, 'yyyy/MM/dd'),
-      endDate: format(b, 'yyyy/MM/dd'),
+      startDate: a,
+      endDate: b,
       division: c,
     })
   }, [handleControls])
@@ -270,7 +283,7 @@ const BulkReport = ({
   ]
 
   const requestDetails = selectedRows.map((row) => ({
-    RequestID: String(row.requestId),
+    RequestID: String(row.requestID),
     PdfUrl: row.pdf,
     InsurerDivisionName: row.insurerDivisionName,
     ProposalNo: row?.proposalNo,
@@ -293,7 +306,7 @@ const BulkReport = ({
 
   const handleDownLoadAudio = async (item) => {
     const requestDetailsAudio = {
-      RequestID: String(item.requestId),
+      RequestID: String(item.requestID),
       AudioUrl: item?.audio,
       InsurerDivisionName: item?.insurerDivisionName,
       ProposalNo: item?.proposalNo,
