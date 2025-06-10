@@ -1,6 +1,6 @@
 export const enum AUTH_ENDPOINT {
   Login = '/admin/auth/login',
-  CurrentUser = '/auth/current-user',
+  CurrentUser = '/admin/auth/profile',
   ForgotPassword = '/HDFCERGO/ValidateEmail',
   ResetPassword = '/HDFCERGO/ChangePassword',
   salesLogin = '/sales/auth/login',
@@ -20,7 +20,8 @@ export const enum SALES_DETAILS {
 
 export const enum MEDICAL_DETAILS {
   getMedicalUserDetails = '/medical/cases/list',
-  getMedicalUserAllDetails = '/HDFCERGO/GetUserMedicalDetails',
+  getMedicalUserAllDetails = '/medical/cases/proposal-list',
+  getMedicalUserOtherDetails = '/medical/cases/proposal-detail',
   getMedicalUserInsuredMedicalDetails = '/HDFCERGO/GetInsurerMedicalDetails',
   getMedicalCallDetails = '/HDFCERGO/GetCallMedicalDetails',
   getMedicalDispositionDetails = '/HDFCERGO/GetCallMedicalDispositions',

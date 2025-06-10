@@ -16,6 +16,23 @@ import EncryptionDecryptionApp from './pages/Sample/EncryptionDecryptionApp'
 import MSIPage from './pages/MSI/MIS'
 type Props = {}
 
+const NF = ({}: Props) => {
+  const { authParams, user } = useAuth()
+
+  const getRedirectPath = () => {
+    if (!authParams.isAuth) {
+      localStorage.clear()
+      return '/login'
+    }
+
+    const salesRedirectRaw = localStorage.getItem('salesRedirect')
+    const salesRedirect = salesRedirectRaw ? JSON.parse(salesRedirectRaw) : null
+    return salesRedirect === null ? '/dashboard' : '/salesteamdashboard'
+  }
+
+  return <Navigate to={getRedirectPath()} replace />
+}
+
 const AppRoutes = ({}: Props) => {
   const { authParams, user } = useAuth()
   const navigate = useNavigate()
@@ -23,6 +40,10 @@ const AppRoutes = ({}: Props) => {
   const isAuthenticated = !!JSON.parse(localStorage.getItem('users'))
   const userRole = JSON.parse(localStorage.getItem('users'))?.designation
   const sales = JSON.parse(localStorage.getItem('sales'))?.isValid
+  const salesRedirectRaw = localStorage.getItem('salesRedirect')
+  const salesRedirect = salesRedirectRaw ? JSON.parse(salesRedirectRaw) : null
+
+  console.log({ salesRedirect })
 
   return (
     <Routes>
@@ -39,19 +60,53 @@ const AppRoutes = ({}: Props) => {
         </>
       )}
 
-      {authParams?.isAuth && !sales ? (
-        <Route
-          path='/dashboard'
-          element={
-            <DashBoardLayout>
-              <MedicalPage />
-            </DashBoardLayout>
-          }
-        />
+      {authParams?.isAuth && salesRedirect === null ? (
+        <>
+          <Route
+            path='/dashboard'
+            element={
+              <DashBoardLayout>
+                <MedicalPage />
+              </DashBoardLayout>
+            }
+          />
+          <Route
+            path='/dashboard/medicalDetailsPage'
+            element={
+              <DashBoardLayout>
+                <MedicalDePage />
+              </DashBoardLayout>
+            }
+          />
+          <Route
+            path='/dashboard/pphccasehistory'
+            element={
+              <DashBoardLayout>
+                <PPHCCaseDePage />
+              </DashBoardLayout>
+            }
+          />
+          <Route
+            path='/bulk-report'
+            element={
+              <DashBoardLayout>
+                <BulkReportDePage />
+              </DashBoardLayout>
+            }
+          />
+          <Route
+            path='/Mis'
+            element={
+              <DashBoardLayout>
+                <MSIPage />
+              </DashBoardLayout>
+            }
+          />
+        </>
       ) : (
-        <Route path='/dashboard' element={<Navigate to='/login' />} />
+        ''
       )}
-
+      {/* 
       {isAuthenticated && !sales ? (
         <Route
           path='/dashboard/medicalDetailsPage'
@@ -63,9 +118,9 @@ const AppRoutes = ({}: Props) => {
         />
       ) : (
         ''
-      )}
+      )} */}
 
-      {isAuthenticated && !sales ? (
+      {/* {isAuthenticated && !sales ? (
         <Route
           path='/dashboard/pphccasehistory'
           element={
@@ -76,17 +131,17 @@ const AppRoutes = ({}: Props) => {
         />
       ) : (
         ''
-      )}
+      )} */}
 
       {/* {userRole === 'Download' ? ( */}
-      <Route
+      {/* <Route
         path='/bulk-report'
         element={
           <DashBoardLayout>
             <BulkReportDePage />
           </DashBoardLayout>
         }
-      />
+      /> */}
       {/* ) : (
         <Route path='/bulk-report' element={<Navigate to='/login' />} />
       )} */}
@@ -104,7 +159,7 @@ const AppRoutes = ({}: Props) => {
         <Route path='/bulk-report' element={<Navigate to='/dashboard' />} />
       )} */}
 
-      {authParams?.isAuth && !sales ? (
+      {/* {authParams?.isAuth && !sales ? (
         <Route
           path='/Mis'
           element={
@@ -115,7 +170,7 @@ const AppRoutes = ({}: Props) => {
         />
       ) : (
         <Route path='/Mis' element={<Navigate to='/login' />} />
-      )}
+      )} */}
 
       {/* <Route
         path='/salesteamdashboard'
@@ -126,18 +181,18 @@ const AppRoutes = ({}: Props) => {
         }
       /> */}
 
-      <Route
-        path='/salesteamdashboard'
-        element={
-          localStorage.getItem('salesRedirect') ? (
+      {authParams?.isAuth && salesRedirect && (
+        <Route
+          path='/salesteamdashboard'
+          element={
             <DashBoardLayout>
               <SalesTeamPage />
             </DashBoardLayout>
-          ) : (
-            ''
-          )
-        }
-      />
+          }
+        />
+      )}
+
+      <Route path={'*'} element={<NF />} />
     </Routes>
   )
 }

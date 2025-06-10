@@ -34,6 +34,7 @@ const TableFooterControls = ({
   from,
   to,
   total,
+  currentPage,
   handleControls,
   notFound,
 }: Props) => {
@@ -136,7 +137,7 @@ const TableFooterControls = ({
           <Typography
             sx={{ fontWeight: '400', fontSize: '14px', color: theme.palette.mDarkBlue?.main }}
           >
-            {`${from === undefined ? 0 : from} - ${to === undefined ? 0 : to} of ${
+            {`${from === undefined ? 0 : (currentPage - 1) * rowsPerPage + 1} - ${to === undefined ? 0 : Math.min(currentPage * rowsPerPage, total)} of ${
               total === undefined ? 0 : total
             }`}
           </Typography>

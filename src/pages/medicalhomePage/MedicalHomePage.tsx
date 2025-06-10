@@ -91,19 +91,32 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
     const token = localStorage.getItem('token')
     const response = await getAllMedicalUserDetails(setLoading, showToast, {
       ...handleControls,
-      // fromDate: data?.startDate ? formatDate(data.startDate) : '',
-      // toDate: data?.endDate ? formatDate(data.endDate) : '',
-      // tpaName: data?.division ?? '',
+      ...(data?.startDate && { fromDate: data?.startDate }),
+      ...(data?.endDate && { toDate: data?.endDate }),
+      ...(data?.division && { tpaName: data?.division }),
     })
 
     if (response) {
-      const { data, ...rest } = response
+      const { data, pagination } = response
+      const { total, per_page, current_page, last_page } = pagination
       if (data.length === 0) {
         setNotFound([TABLES.MEDICAL_CHECK])
+        setData([])
+        setControls({
+          total,
+          per_page,
+          current_page,
+          last_page,
+        })
       } else {
         setNotFound([])
         setData(data)
-        setControls(rest)
+        setControls({
+          total,
+          per_page,
+          current_page,
+          last_page,
+        })
       }
     } else {
       setData([])
@@ -286,7 +299,7 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
             notFound={notFound.includes(TABLES.MEDICAL_CHECK)}
             btnTxtArray={[]}
             isTableWithOutAction={true}
-            redirectPath={`/dashboard/medicalDetailsPage?startDate=${startDateFromUrl}&endDate=${endDateFromUrl}&division=${divisionFromUrl}}`}
+            redirectPath={`/dashboard/medicalDetailsPage`}
             showSearch={true}
             showPagination={true}
           />

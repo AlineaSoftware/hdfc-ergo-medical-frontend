@@ -24,13 +24,16 @@ export const getAllMedicalUserDetails = async (
     if (res?.data?.status === 400) {
       toast('error', res.data.message)
     } else {
-      toast('success', COMMON_MESSAGE.Submit)
+      // toast('success', COMMON_MESSAGE.Submit)
     }
     return res?.data
   } catch (error: any) {
     console.log(error)
     if (error.response.status === 400) {
       toast('error', error.response.data.message)
+    } else if (error.response.status === 401) {
+      toast('error', 'Unauthorized access. Please log in again.')
+      localStorage.clear()
     } else {
       toast('error', error.response.statusText)
     }
@@ -39,25 +42,56 @@ export const getAllMedicalUserDetails = async (
   }
 }
 
+// export const getMedicalUserDetails = async (
+//   loading: LoadingState['setLoading'],
+//   toast: ShowToastFunction,
+//   formData: medicalAllUserDetails,
+// ) => {
+//   try {
+//     loading({ isLoading: true, isPage: false })
+//     const requestBody = {
+//       encryptedData: encryptDetails(JSON.stringify(formData), VITE_APP_SECRET_KEY),
+//     }
+//     const res = await axiosInstance.post(MEDICAL_DETAILS.getMedicalUserAllDetails, requestBody)
+//     if (res.data.status === 400) {
+//       toast('error', res.data.message)
+//     }
+//     return res.data
+//   } catch (error: any) {
+//     console.log(error)
+//     if (error.response.status === 400) {
+//       toast('error', error.response.data.message)
+//     } else {
+//       toast('error', error.response.statusText)
+//     }
+//   } finally {
+//     loading({ isLoading: false, isPage: false })
+//   }
+// }
 export const getMedicalUserDetails = async (
   loading: LoadingState['setLoading'],
   toast: ShowToastFunction,
-  formData: medicalAllUserDetails,
+  proposalId: string,
+  params: Record<string, any>,
 ) => {
   try {
     loading({ isLoading: true, isPage: false })
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify(formData), VITE_APP_SECRET_KEY),
-    }
-    const res = await axiosInstance.post(MEDICAL_DETAILS.getMedicalUserAllDetails, requestBody)
-    if (res.data.status === 400) {
+    const url = `${MEDICAL_DETAILS.getMedicalUserAllDetails}/${proposalId}?${new URLSearchParams(params).toString()}`
+
+    const res = await axiosInstance.get(url)
+    if (res?.data?.status === 400) {
       toast('error', res.data.message)
+    } else {
+      // toast('success', COMMON_MESSAGE.Submit)
     }
-    return res.data
+    return res?.data
   } catch (error: any) {
     console.log(error)
     if (error.response.status === 400) {
       toast('error', error.response.data.message)
+    } else if (error.response.status === 401) {
+      toast('error', 'Unauthorized access. Please log in again.')
+      localStorage.clear()
     } else {
       toast('error', error.response.statusText)
     }
@@ -66,6 +100,38 @@ export const getMedicalUserDetails = async (
   }
 }
 // ----------------------------decryption
+
+export const getMedicalUserOtherDetails = async (
+  loading: LoadingState['setLoading'],
+  toast: ShowToastFunction,
+  proposalId: string,
+  params: Record<string, any>,
+) => {
+  try {
+    loading({ isLoading: true, isPage: false })
+    const url = `${MEDICAL_DETAILS.getMedicalUserOtherDetails}/${proposalId}?${new URLSearchParams(params).toString()}`
+
+    const res = await axiosInstance.get(url)
+    if (res?.data?.status === 400) {
+      toast('error', res.data.message)
+    } else {
+      // toast('success', COMMON_MESSAGE.Submit)
+    }
+    return res?.data
+  } catch (error: any) {
+    console.log(error)
+    if (error.response.status === 400) {
+      toast('error', error.response.data.message)
+    } else if (error.response.status === 401) {
+      toast('error', 'Unauthorized access. Please log in again.')
+      localStorage.clear()
+    } else {
+      toast('error', error.response.statusText)
+    }
+  } finally {
+    loading({ isLoading: false, isPage: false })
+  }
+}
 
 export const getMedicalUserInsuredDetails = async (
   loading: LoadingState['setLoading'],
@@ -244,6 +310,9 @@ export const MedicalBulkReport = async (
     console.log(error)
     if (error.response.status === 400) {
       toast('error', error.response.data.message)
+    } else if (error.response.status === 401) {
+      toast('error', 'Unauthorized access. Please log in again.')
+      localStorage.clear()
     } else {
       toast('error', error.response.statusText)
     }

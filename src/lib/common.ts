@@ -149,6 +149,9 @@ export const downloadExcel = async (
     console.log(error)
     if (error.response.status === 400) {
       toast('error', error.response.data.message)
+    } else if (error.response.status === 401) {
+      toast('error', 'Unauthorized access. Please log in again.')
+      localStorage.clear()
     } else {
       toast('error', error.response.statusText)
     }

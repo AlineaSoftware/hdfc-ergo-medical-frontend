@@ -19,11 +19,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import { useLocation } from 'react-router-dom'
 import { useLoading } from 'src/context/LoadingContext'
 import { useToast } from '@/hooks/useToast'
-import {
-  callDispositionsForMedicalDetails,
-  callForMedicalDetails,
-  getMedicalUserInsuredDetails,
-} from 'src/lib/medicalDetails'
+import { getMedicalUserOtherDetails } from 'src/lib/medicalDetails'
 
 type Props = {
   handleOpen: () => void
@@ -32,6 +28,7 @@ type Props = {
   type: TableStates
   handleClose: () => void
   selectedId: number
+  state?: any
 }
 const MedicalDetails2Page = ({
   handleOpen,
@@ -40,6 +37,7 @@ const MedicalDetails2Page = ({
   type,
   handleClose,
   selectedId,
+  state,
 }: Props) => {
   //default controls
   const defaultControls = {
@@ -49,7 +47,7 @@ const MedicalDetails2Page = ({
   }
 
   // Record and Control States
-  const [data, setData] = useState<any[]>([])
+  const [data, setData] = useState(null)
   const [entity, setEntity] = useState<any | undefined>()
   const [controls, setControls] = useState({})
   const [controls1, setControls1] = useState({})
@@ -63,22 +61,19 @@ const MedicalDetails2Page = ({
 
   const getUserInsuredData = async () => {
     const token = localStorage.getItem('token')
-    const response = await getMedicalUserInsuredDetails(setLoading, showToast, {
-      requestID: String(selectedId),
-      token: token,
-    })
+    const response = await getMedicalUserOtherDetails(setLoading, showToast, state?._id, {})
 
     if (response) {
-      const { getInsurerMedicalList, ...rest } = response
-      if (getInsurerMedicalList?.length === 0) {
+      const { data, ...rest } = response
+      if (data?.length === 0) {
         setNotFound([TABLES.SALES_CHECK])
       } else {
         setNotFound([])
-        setData(getInsurerMedicalList)
-        setControls(rest)
+        setData(data)
+        // setControls(rest)
       }
     } else {
-      setData([])
+      setData(null)
     }
   }
 
@@ -90,17 +85,17 @@ const MedicalDetails2Page = ({
 
   const headCells: HeadCell[] = [
     {
-      id: 'status',
+      id: 'oldStatus',
       label: 'Status',
       isSort: false,
       width: 50,
     },
     {
-      id: 'statusDate',
+      id: 'changedAt',
       label: 'Status date',
       isSort: false,
       width: 200,
-      type: 'date12hour',
+      type: 'dateTime',
     },
     // {
     //   id: 'comment',
@@ -140,7 +135,7 @@ const MedicalDetails2Page = ({
 
   const callDispositionHeadCells: HeadCell[] = [
     {
-      id: 'disposition',
+      id: 'name',
       label: 'Disposition',
       isSort: false,
       width: 50,
@@ -174,24 +169,24 @@ const MedicalDetails2Page = ({
   ]
 
   const getCallMedicalDetails = async (item: any) => {
-    const token = localStorage.getItem('token')
-    const response = await callForMedicalDetails(setLoading, showToast, setNotFound, notFound, {
-      ...handleControls,
-      requestID: String(selectedId),
-      token: token,
-    })
-    if (response) {
-      const { getCallList, ...rest } = response
-      if (getCallList.length === 0) {
-        setNotFound([TABLES.SALES_CHECK])
-      } else {
-        setNotFound([])
-        setCallData(getCallList)
-        setControls(rest)
-      }
-    } else {
-      setCallData([])
-    }
+    // const token = localStorage.getItem('token')
+    // const response = await callForMedicalDetails(setLoading, showToast, setNotFound, notFound, {
+    //   ...handleControls,
+    //   requestID: String(selectedId),
+    //   token: token,
+    // })
+    // if (response) {
+    //   const { getCallList, ...rest } = response
+    //   if (getCallList.length === 0) {
+    //     setNotFound([TABLES.SALES_CHECK])
+    //   } else {
+    //     setNotFound([])
+    //     setCallData(getCallList)
+    //     setControls(rest)
+    //   }
+    // } else {
+    //   setCallData([])
+    // }
   }
 
   useEffect(() => {
@@ -203,36 +198,34 @@ const MedicalDetails2Page = ({
   }, [selectedId, handleControls])
 
   const getCallDispositionsMedical = async () => {
-    const token = localStorage.getItem('token')
-    const response = await callDispositionsForMedicalDetails(
-      setLoading,
-      showToast,
-      setNotFound,
-      notFound,
-      {
-        ...handleControls1,
-        requestID: String(selectedId),
-        token: token,
-      },
-    )
-
-    if (response) {
-      const { getCallDispositionList, ...rest } = response
-
-      // Add a null check for getCallDispositionList before accessing length
-      if (getCallDispositionList && getCallDispositionList.length === 0) {
-        setNotFound([TABLES.DISPOSITION_DURATION])
-      } else if (getCallDispositionList) {
-        setNotFound([])
-        setDataDesposition(getCallDispositionList)
-        setControls1(rest)
-      } else {
-        // Handle case where getCallDispositionList is null or undefined
-        setDataDesposition([])
-      }
-    } else {
-      setDataDesposition([])
-    }
+    // const token = localStorage.getItem('token')
+    // const response = await callDispositionsForMedicalDetails(
+    //   setLoading,
+    //   showToast,
+    //   setNotFound,
+    //   notFound,
+    //   {
+    //     ...handleControls1,
+    //     requestID: String(selectedId),
+    //     token: token,
+    //   },
+    // )
+    // if (response) {
+    //   const { getCallDispositionList, ...rest } = response
+    //   // Add a null check for getCallDispositionList before accessing length
+    //   if (getCallDispositionList && getCallDispositionList.length === 0) {
+    //     setNotFound([TABLES.DISPOSITION_DURATION])
+    //   } else if (getCallDispositionList) {
+    //     setNotFound([])
+    //     setDataDesposition(getCallDispositionList)
+    //     setControls1(rest)
+    //   } else {
+    //     // Handle case where getCallDispositionList is null or undefined
+    //     setDataDesposition([])
+    //   }
+    // } else {
+    //   setDataDesposition([])
+    // }
   }
 
   useEffect(() => {
@@ -243,149 +236,141 @@ const MedicalDetails2Page = ({
 
   return (
     <Box>
-      {data
+      {/* {data
         ?.filter((x) => x.requestID === selectedId)
-        ?.map((x, i) => (
-          <div className='grid grid-cols-5 gap-4' key={Math.random()}>
-            <div className='row-span-4 row-start-2  shadow-md mb-[10px]  flex justify-between items-center flex-col'>
-              <div className='flex justify-center items-center h-[41px] bg-lightGray-light  w-full rounded-md'>
-                <div className='w-full flex justify-around'>
-                  <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>
-                    Insured
-                  </h1>
-                  <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>
-                    {x?.name}
-                  </h1>
-                </div>
-              </div>
-              <p className='text-center text-base font-bold text-gray-700 mb-2'></p>
-
-              <div className='flex w-72 flex-col gap-3  text-gray-600 sm:text-sm pt-1'>
-                <div className='flex justify-center'>
-                  <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
-                    Gender
-                  </div>
-                  <div className='w-[50%] break-words pl-2 sm:text-xs'>{x?.gender}</div>
-                </div>
-                <div className='flex justify-center'>
-                  <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
-                    Age
-                  </div>
-                  <div className='w-[50%] break-words pl-2 sm:text-xs'>
-                    {x?.age ? `${x.age} Years` : 'N/A'}
-                  </div>
-                </div>
-                <div className='flex justify-center'>
-                  <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
-                    DOB
-                  </div>
-                  <div className='w-[50%] break-words pl-2 sm:text-xs'>
-                    {x?.dob ? formatDateDDMMYY(x?.dob) : ''}
-                  </div>
-                </div>
-                <div className='flex justify-center'>
-                  <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
-                    Contact
-                  </div>
-                  <div className='w-[50%] break-words pl-2 sm:text-xs'>{x?.userMobile}</div>
-                </div>
-                <div className='flex justify-center'>
-                  <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
-                    Email
-                  </div>
-                  <div className=' w-[50%] break-words pl-2 sm:text-xs md:text-xs'>{x?.email}</div>
-                </div>
-                <div className='flex justify-center'>
-                  <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
-                    Product
-                  </div>
-                  <div className='w-[50%] pl-2 sm:text-xs'>{x?.product}</div>
-                </div>
-
-                <div className='flex justify-center'>
-                  <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs whitespace-nowrap'>
-                    Sum Insured
-                  </div>
-                  <div className='w-[50%] break-words pl-2 sm:text-xs'>
-                    {x?.sumInsured ? formatCurrency(x?.sumInsured) : ''}
-                  </div>
-                </div>
-              </div>
-
-              <div className='mt-4 bg-gray-100 p-2  text-center text-xs text-gray-600'>
-                <div className='font-semibold  sm:text-xs'>Address</div>
-                <div className='pt-2 sm:text-xs break-all'>{x?.address}</div>
-              </div>
-
-              <div className='flex justify-center items-center h-[41px] bg-lightGray-light  w-full '>
-                <div className='w-full flex justify-around'>
-                  <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>Agent</h1>
-                  <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>
-                    {x?.userName}
-                  </h1>
-                </div>
-              </div>
-
-              <div className='flex w-64 flex-col gap-3 pt-2 pb-2 text-gray-600 sm:text-sm'>
-                <div className='flex justify-end'>
-                  <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
-                    Contact
-                  </div>
-                  <div className='w-[70%] break-words pl-2 sm:text-xs'>{x.mobile}</div>
-                </div>
-                <div className='flex justify-end'>
-                  <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
-                    Email
-                  </div>
-                  <div className='w-[70%] break-words pl-2 sm:text-xs md:text-xs'>
-                    {x?.insuredEmail}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className='col-span-4 row-span-4 col-start-2 row-start-2'>
-              <Table
-                handleOpen={handleOpen}
-                setType={setType}
-                setEntity={setEntity}
-                rows={callData}
-                headCells={headCells}
-                controls={controls as Controls}
-                handleControls={handleControls}
-                setHandleControls={setHandleControls}
-                actions={[]}
-                tableHeading={{
-                  tableId: TABLES.NEW_REQUEST,
-                  tableName: 'Tele MER Case History',
-                }}
-                notFound={notFound.includes(TABLES.NEW_REQUEST)}
-                btnTxtArray={[]}
-                isTableWithOutAction={true}
-                showPagination={true}
-              />
-              <Table
-                handleOpen={handleOpen}
-                setType={setType}
-                setEntity={setEntity}
-                rows={dataDesposition}
-                headCells={callDispositionHeadCells}
-                controls={controls1 as Controls}
-                handleControls={handleControls1}
-                setHandleControls={setHandleControls1}
-                actions={[]}
-                tableHeading={{
-                  tableId: TABLES.MEDICAL_CHECK,
-                  tableName: `Call Disposition`,
-                }}
-                notFound={notFound.includes(TABLES.MEDICAL_CHECK)}
-                btnTxtArray={[]}
-                isTableWithOutAction={true}
-                showPagination={true}
-              />
+        ?.map((x, i) => ( */}
+      <div className='grid grid-cols-5 gap-4' key={Math.random()}>
+        <div className='row-span-4 row-start-2  shadow-md mb-[10px]  flex justify-between items-center flex-col'>
+          <div className='flex justify-center items-center h-[41px] bg-lightGray-light  w-full rounded-md'>
+            <div className='w-full flex justify-around'>
+              <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>Insured</h1>
+              <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>
+                {data?.insuredName}
+              </h1>
             </div>
           </div>
-        ))}
+          <p className='text-center text-base font-bold text-gray-700 mb-2'></p>
+
+          <div className='flex w-72 flex-col gap-3  text-gray-600 sm:text-sm pt-1'>
+            <div className='flex justify-center'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
+                Gender
+              </div>
+              <div className='w-[50%] break-words pl-2 sm:text-xs'>{data?.gender}</div>
+            </div>
+            <div className='flex justify-center'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>Age</div>
+              <div className='w-[50%] break-words pl-2 sm:text-xs'>
+                {data?.age ? `${data.age} Years` : 'N/A'}
+              </div>
+            </div>
+            <div className='flex justify-center'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>DOB</div>
+              <div className='w-[50%] break-words pl-2 sm:text-xs'>
+                {data?.clientDob ? data?.clientDob : ''}
+              </div>
+            </div>
+            <div className='flex justify-center'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
+                Contact
+              </div>
+              <div className='w-[50%] break-words pl-2 sm:text-xs'>{data?.contactNo}</div>
+            </div>
+            <div className='flex justify-center'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>Email</div>
+              <div className=' w-[50%] break-words pl-2 sm:text-xs md:text-xs'>
+                {data?.customerEmailId}
+              </div>
+            </div>
+            <div className='flex justify-center'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
+                Product
+              </div>
+              <div className='w-[50%] pl-2 sm:text-xs'>{data?.productName}</div>
+            </div>
+
+            <div className='flex justify-center'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs whitespace-nowrap'>
+                Sum Insured
+              </div>
+              <div className='w-[50%] break-words pl-2 sm:text-xs'>
+                {data?.sumInsured ? formatCurrency(data?.sumInsured) : ''}
+              </div>
+            </div>
+          </div>
+
+          <div className='mt-4 bg-gray-100 p-2  text-center text-xs text-gray-600'>
+            <div className='font-semibold  sm:text-xs'>Address</div>
+            <div className='pt-2 sm:text-xs break-all'>{data?.address}</div>
+          </div>
+
+          <div className='flex justify-center items-center h-[41px] bg-lightGray-light  w-full '>
+            <div className='w-full flex justify-around'>
+              <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>Agent</h1>
+              <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>
+                {data?.agent?.agentName}
+              </h1>
+            </div>
+          </div>
+
+          <div className='flex w-64 flex-col gap-3 pt-2 pb-2 text-gray-600 sm:text-sm'>
+            <div className='flex justify-end'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
+                Contact
+              </div>
+              <div className='w-[70%] break-words pl-2 sm:text-xs'>{data?.agent?.agentMobile}</div>
+            </div>
+            <div className='flex justify-end'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>Email</div>
+              <div className='w-[70%] break-words pl-2 sm:text-xs md:text-xs'>
+                {data?.agent?.agentEmailId}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className='col-span-4 row-span-4 col-start-2 row-start-2'>
+          <Table
+            handleOpen={handleOpen}
+            setType={setType}
+            setEntity={setEntity}
+            rows={data?.history}
+            headCells={headCells}
+            controls={controls as Controls}
+            handleControls={handleControls}
+            setHandleControls={setHandleControls}
+            actions={[]}
+            tableHeading={{
+              tableId: TABLES.NEW_REQUEST,
+              tableName: 'Tele MER Case History',
+            }}
+            notFound={notFound.includes(TABLES.NEW_REQUEST)}
+            btnTxtArray={[]}
+            isTableWithOutAction={true}
+            showPagination={true}
+          />
+          <Table
+            handleOpen={handleOpen}
+            setType={setType}
+            setEntity={setEntity}
+            rows={data?.disposition}
+            headCells={callDispositionHeadCells}
+            controls={controls1 as Controls}
+            handleControls={handleControls1}
+            setHandleControls={setHandleControls1}
+            actions={[]}
+            tableHeading={{
+              tableId: TABLES.MEDICAL_CHECK,
+              tableName: `Call Disposition`,
+            }}
+            notFound={notFound.includes(TABLES.MEDICAL_CHECK)}
+            btnTxtArray={[]}
+            isTableWithOutAction={true}
+            showPagination={true}
+          />
+        </div>
+      </div>
+      {/* // ))} */}
     </Box>
   )
 }
