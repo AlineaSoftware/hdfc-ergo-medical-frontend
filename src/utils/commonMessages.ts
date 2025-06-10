@@ -1,6 +1,6 @@
 // Common messages are decalared here
 export enum COMMON_MESSAGE {
-  Login = 'log In ',
+  Login = 'logIn Successfully',
   LogOut = 'loggedOut Successfully',
   Success = 'Created',
   Updated = 'Updated',

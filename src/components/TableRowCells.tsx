@@ -311,7 +311,7 @@ const TableRowCell = ({
           }}
         >
           <Checkbox
-            checked={!!selectedRows.find((r) => row.requestId === r.requestId)}
+            checked={!!selectedRows.find((r) => row.requestID === r.requestID)}
             onChange={(e, checked) => {
               handleChecked(checked, row)
             }}

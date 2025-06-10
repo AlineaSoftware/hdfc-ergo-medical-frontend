@@ -38,11 +38,13 @@ type Props = {
   open: boolean
   type: TableStates
   handleClose: () => void
-  setSelectedId: Dispatch<SetStateAction<number>>
-  selectedId: number
+  setSelectedId: Dispatch<SetStateAction<string>>
+  selectedId: string
   data: any
   dataset: any
   controls: any
+  setSchedule?: Dispatch<SetStateAction<boolean>>
+  schedule?: boolean
 }
 const SalesTeamData = ({
   handleOpen,
@@ -55,6 +57,8 @@ const SalesTeamData = ({
   data,
   dataset,
   controls,
+  setSchedule,
+  schedule,
 }: Props) => {
   const defaultControls = {
     search: '',
@@ -85,56 +89,6 @@ const SalesTeamData = ({
       },
     })
 
-  // const getAllData = async (item: any) => {
-  //   console.log({ item })
-  //   const response = await getAllDetails(setLoading, showToast, item)
-
-  //   if (response) {
-  //     const { ...rest } = response
-  //     if (!response) {
-  //       setNotFound([TABLES.SALES_CHECK])
-  //     } else {
-  //       setNotFound([])
-  //       setDataset(response)
-  //       setControls(rest)
-  //     }
-  //   } else {
-  //     setDataset([])
-  //   }
-  // }
-
-  // const getUserData = async () => {
-  //   const loginValue = salesUser?.validProposalNumber
-  //   const response = await getSalesList(setLoading, showToast)
-
-  //   if (response) {
-  //     const { data, ...rest } = response
-  //     if (data?.length === 0) {
-  //       setNotFound([TABLES.SALES_CHECK])
-  //     } else {
-  //       setNotFound([])
-  //       setData(data)
-  //       setSelectedId(data[0]?._id)
-  //       setControls(rest)
-  //       if (data.length > 0) {
-  //         await getAllData(data[0]?._id)
-  //       }
-  //     }
-  //   } else {
-  //     setData([])
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   getUserData()
-  // }, [])
-
-  // useEffect(() => {
-  //   if (selectedId !== 0 && data[0]?.insurerDivisionName === InsuranceDivisionEnum.PPHC) {
-  //     getAllData(selectedId)
-  //   }
-  // }, [selectedId])
-
   const getPincode = async (pincode) => {
     const response = await pinCodeAPI(setLoading, showToast, pincode)
     if (response) {
@@ -163,36 +117,25 @@ const SalesTeamData = ({
   }
 
   const onPartialSaveDetails: SubmitHandler<any> = async (data) => {
-    if (!entity?.requestID) {
-      showToast(
-        'error',
-        'Request ID is missing. Please ensure all fields are filled out correctly.',
-      )
-      return
-    }
-
     const formData = {
-      requestID: entity?.requestID,
-      AppointmentDate: new Date(data?.AppointmentDate).toLocaleDateString('en-CA'),
-      appointmentTime: format(new Date(data?.appointmentTime), 'HH:mm'),
+      apptDateTime: format(
+        addHours(new Date(data?.AppointmentDate), data?.appointmentTime.getHours()),
+        'yyyy-MM-dd HH:mm',
+      ),
       agentName: data?.agentName,
-      agentMobileNumber: data?.agentMobileNumber,
+      agentNumber: data?.agentMobileNumber,
       language: data?.language?.label || '',
-      dcName: data?.DcName?.label || '',
-      dcPincode: data?.dcPincode || '',
     }
 
-    console.log(formData)
+    const response = await insertDetails(setLoading, showToast, selectedId, formData)
 
-    // const response = await insertDetails(setLoading, showToast, formData)
-
-    // if (response?.success) {
-    //   showToast('success', 'Details inserted successfully!')
-    //   handleClose()
-    //   reset()
-    // } else {
-    //   showToast('error', 'Failed to insert details. Please try again.')
-    // }
+    if (response) {
+      handleClose()
+      setSchedule(!schedule)
+      reset()
+    } else {
+      showToast('error', 'Failed to insert details. Please try again.')
+    }
   }
 
   const headCells_TeleMER: HeadCell[] = [

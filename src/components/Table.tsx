@@ -49,7 +49,7 @@ type Props = {
   onRowClick?: (row: any) => void
   showSearch?: boolean
   showPagination?: boolean
-  selectedId?: number
+  selectedId?: string
   showSelectedRowBg?: boolean
   handleDownload?: () => void
   DownLoadAudio?: (item: any) => void
@@ -93,7 +93,7 @@ const CustomTable = ({
   DownLoadReport,
 }: Props) => {
   const nav = useNavigate()
-  console.log({ rows })
+
   // Actions
 
   //Create

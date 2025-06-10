@@ -255,7 +255,7 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
                   setError={setError}
                   validation={dateSelectValidation('From Date', true)}
                   sx={{ minWidth: '250px' }}
-                  showClearButton={false}
+                  showClearButton={true}
                   minDate={startOfYear(new Date(2024, 0, 1))}
                 />
                 <DateInput
@@ -268,7 +268,7 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
                   validation={dateSelectValidation('To Date', true)}
                   sx={{ minWidth: '250px' }}
                   minDate={new Date(startDateWatch) || null}
-                  showClearButton={false}
+                  showClearButton={true}
                 />
               </div>
               <RadioInput name='division' label='Division' control={control} radios={radios} />

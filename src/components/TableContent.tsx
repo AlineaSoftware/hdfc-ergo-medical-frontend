@@ -50,7 +50,7 @@ type Props = {
   pathPermission: string[]
   viewNotRequired: boolean
   onRowClick?: (row: any) => void
-  selectedId?: number
+  selectedId?: string
   showSelectedRowBg?: boolean
   DownLoadAudio: (item: any) => void
   DownLoadReport: (item: any) => void
@@ -124,8 +124,8 @@ const TableContent = ({
   //   }
   // }, [])
   const handleChecked = (checked: boolean, row: any) => {
-    if (selectedRows.find((x) => x.requestId == row.requestId)) {
-      const arr = selectedRows.filter((x) => x.requestId !== row.requestId)
+    if (selectedRows.find((x) => x.requestID == row.requestID)) {
+      const arr = selectedRows.filter((x) => x.requestID !== row.requestID)
       setSelectedRows(arr)
     } else {
       setSelectedRows((prevSelectedRows) => [...prevSelectedRows, row])

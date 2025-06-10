@@ -302,8 +302,6 @@ export const MedicalBulkReport = async (
     const res = await axiosInstance.get(url)
     if (res?.data?.status === 400) {
       toast('error', res.data.message)
-    } else {
-      toast('success', COMMON_MESSAGE.Submit)
     }
     return res?.data
   } catch (error: any) {

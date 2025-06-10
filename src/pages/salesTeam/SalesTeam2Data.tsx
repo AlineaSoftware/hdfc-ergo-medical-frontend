@@ -52,8 +52,6 @@ const SalesTeam2Data = ({
   const [statusDetails, setStatusDetails] = useState(null)
   const salesUser = JSON.parse(localStorage.getItem('sales'))
 
-  console.log({ dataDesposition })
-
   const headCells: HeadCell[] = [
     {
       id: 'oldStatus',
@@ -82,9 +80,6 @@ const SalesTeam2Data = ({
       label: 'Disposition',
       isSort: false,
       width: 50,
-      valueGetter: (row) => {
-        console.log('Hiiii')
-      },
     },
     {
       id: 'startTime',
@@ -116,16 +111,17 @@ const SalesTeam2Data = ({
 
   const callDispositionHeadCellsPPHC: HeadCell[] = [
     {
-      id: 'disposition',
+      id: 'name',
       label: 'Disposition',
       isSort: false,
       width: 50,
     },
     {
-      id: 'callDate',
+      id: 'changedAt',
       label: 'Call Date',
       isSort: false,
       width: 50,
+      type: 'dateTime',
     },
     {
       id: 'comment',
@@ -148,41 +144,41 @@ const SalesTeam2Data = ({
     female: 'female',
   }
 
-  const getCallDispositions = async () => {
-    const response = await callDispositions(setLoading, showToast, selectedId, handleControls)
-    if (response?.data) {
-      const callDisposition = response?.data?.dispositionId
-        ?.filter((call) => call.id)
-        .map((call) => call.id)
-      console.log({ callDisposition })
-      setDataDesposition(callDisposition)
-    } else {
-      setDataDesposition([])
-    }
-  }
+  // const getCallDispositions = async () => {
+  //   const response = await callDispositions(setLoading, showToast, selectedId, handleControls)
+  //   if (response?.data) {
+  //     const callDisposition = response?.data?.dispositionId
+  //       ?.filter((call) => call.id)
+  //       .map((call) => call.id)
+  //     console.log({ callDisposition })
+  //     setDataDesposition(callDisposition)
+  //   } else {
+  //     setDataDesposition([])
+  //   }
+  // }
 
-  useEffect(() => {
-    if (selectedId !== null) {
-      getCallDispositions()
-    }
-  }, [selectedId, handleControls1])
+  // useEffect(() => {
+  //   if (selectedId !== null) {
+  //     getCallDispositions()
+  //   }
+  // }, [selectedId, handleControls1])
 
-  const getStatusDetails = async (item: any) => {
-    const response = await proposerStatus(setLoading, showToast, selectedId, handleControls)
-    if (response) {
-      setStatusDetails(response?.data)
-    } else {
-      setStatusDetails([])
-    }
-  }
+  // const getStatusDetails = async (item: any) => {
+  //   const response = await proposerStatus(setLoading, showToast, selectedId, handleControls)
+  //   if (response) {
+  //     setStatusDetails(response?.data)
+  //   } else {
+  //     setStatusDetails([])
+  //   }
+  // }
 
-  useEffect(() => {
-    if (selectedId !== null) {
-      getStatusDetails({
-        requestID: String(selectedId),
-      })
-    }
-  }, [selectedId, handleControls])
+  // useEffect(() => {
+  //   if (selectedId !== null) {
+  //     getStatusDetails({
+  //       requestID: String(selectedId),
+  //     })
+  //   }
+  // }, [selectedId, handleControls])
 
   const getModifyData = () => {
     setHandleControls(defaultControls)
@@ -221,7 +217,7 @@ const SalesTeam2Data = ({
             <div className='flex justify-end'>
               <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>Age</div>
               <div className='w-[50%] break-words pl-2 sm:text-xs'>
-                {dataset?.data?.openCaseId?.age ? `${dataset?.data?.openCaseId?.age} Years` : 'N/A'}
+                {dataset?.data?.age ? `${dataset?.data?.age} Years` : 'N/A'}
               </div>
             </div>
             <div className='flex justify-end'>
@@ -229,23 +225,21 @@ const SalesTeam2Data = ({
                 Sum Insured
               </div>
               <div className='w-[50%] break-words pl-2 sm:text-xs'>
-                {formatCurrency(dataset?.data?.openCaseId?.sumInsured)}
+                {formatCurrency(dataset?.data?.sumInsured)}
               </div>
             </div>
           </div>
 
           <div className='mt-4 bg-gray-100 p-2  text-center text-xs text-gray-600'>
             <div className='font-semibold  sm:text-xs'>Address</div>
-            <div className='pt-2 sm:text-xs md:text-xs break-all '>
-              {dataset?.data?.openCaseId?.address}
-            </div>
+            <div className='pt-2 sm:text-xs md:text-xs break-all '>{dataset?.data?.address}</div>
           </div>
 
           <div className='flex justify-center items-center h-[41px] bg-lightGray-light   w-full '>
             <div className='w-full flex justify-around'>
               <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>Agent</h1>
               <h1 className='text-center sm:text-sm text-lg font-black text-gray-800'>
-                {dataset?.data?.openCaseId?.proposerName}
+                {dataset?.data?.proposerName}
               </h1>
             </div>
           </div>
@@ -255,14 +249,12 @@ const SalesTeam2Data = ({
               <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
                 Contact
               </div>
-              <div className='w-[70%] break-words pl-2 sm:text-xs'>
-                {dataset?.data?.openCaseId?.contactNo}
-              </div>
+              <div className='w-[70%] break-words pl-2 sm:text-xs'>{dataset?.data?.contactNo}</div>
             </div>
             <div className='flex justify-end'>
               <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>Email</div>
               <div className='w-[70%] break-words pl-2 sm:text-xs'>
-                {dataset?.data?.openCaseId?.customerEmailId}
+                {dataset?.data?.customerEmailId}
               </div>
             </div>
           </div>
@@ -272,7 +264,7 @@ const SalesTeam2Data = ({
             handleOpen={handleOpen}
             setType={setType}
             setEntity={setEntity}
-            rows={statusDetails}
+            rows={dataset?.data?.history}
             headCells={headCells.filter((cell) => {
               return !(
                 cell.id === 'comment' && data[0]?.insurerDivisionName === InsuranceDivisionEnum.TUW
@@ -300,7 +292,7 @@ const SalesTeam2Data = ({
             handleOpen={handleOpen}
             setType={setType}
             setEntity={setEntity}
-            rows={dataDesposition}
+            rows={dataset?.data?.disposition}
             headCells={
               data[0]?.insurerDivisionName === InsuranceDivisionEnum.TUW
                 ? callDispositionHeadCells
