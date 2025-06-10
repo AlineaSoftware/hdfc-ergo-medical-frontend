@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getCurrentUser = async () => {
     const res = await getCurrentUserDetails()
     if (res?.data) {
-      setUser(res?.data?.user)
+      setUser(res?.data)
       setProfileRef(false)
     } else {
       clearStorage()
@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (authParams?.isAuth === true) {
-      // getCurrentUser()
+      JSON.parse(localStorage.getItem('salesRedirect')) ? '' : getCurrentUser()
       console.log('Session called')
     }
   }, [authParams?.isAuth, token, profileRef])

@@ -99,7 +99,7 @@ export const resetPassword = async (
 
 export const getCurrentUserDetails = async () => {
   try {
-    const res = await axiosInstance.post(`${AUTH_ENDPOINT.CurrentUser}`, {})
+    const res = await axiosInstance.get(AUTH_ENDPOINT.CurrentUser)
     return res.data
   } catch (error: any) {
     console.log(error)

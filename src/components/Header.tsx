@@ -143,8 +143,7 @@ const Header = ({ open, setOpen }: Props) => {
   const sales = JSON.parse(localStorage.getItem('sales'))
   const salesRedirectRaw = localStorage.getItem('salesRedirect')
   const salesRedirect = salesRedirectRaw ? JSON.parse(salesRedirectRaw) : null
-
-  const showName = users ? users?.loginName : 'Sales Portal'
+  const showName = user ? user?.firstName : 'Sales Portal'
 
   const roleWiseHeader = HeadingList?.filter((x) => x?.role?.includes(users?.designation))
 

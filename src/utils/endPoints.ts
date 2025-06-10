@@ -1,6 +1,6 @@
 export const enum AUTH_ENDPOINT {
   Login = '/admin/auth/login',
-  CurrentUser = '/auth/current-user',
+  CurrentUser = '/admin/auth/profile',
   ForgotPassword = '/HDFCERGO/ValidateEmail',
   ResetPassword = '/HDFCERGO/ChangePassword',
   salesLogin = '/sales/auth/login',
