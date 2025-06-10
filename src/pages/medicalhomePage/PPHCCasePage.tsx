@@ -33,8 +33,8 @@ type Props = {
   open: boolean
   type: TableStates
   handleClose: () => void
-  setSelectedId: Dispatch<SetStateAction<number>>
-  selectedId: number
+  setSelectedId: Dispatch<SetStateAction<string>>
+  selectedId: string
 }
 const PPHCCasePage = ({
   handleOpen,
@@ -220,7 +220,7 @@ const PPHCCasePage = ({
   }
 
   useEffect(() => {
-    if (selectedId !== 0) {
+    if (selectedId !== '') {
       getDCDetailsForMedical()
     }
   }, [selectedId])

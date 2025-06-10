@@ -33,8 +33,8 @@ type Props = {
   open: boolean
   type: TableStates
   handleClose: () => void
-  setSelectedId: Dispatch<SetStateAction<number>>
-  selectedId: number
+  setSelectedId: Dispatch<SetStateAction<string>>
+  selectedId: string
   state?: any
 }
 const MedicalDetailsPage = ({

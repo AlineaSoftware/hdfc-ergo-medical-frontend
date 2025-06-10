@@ -20,7 +20,7 @@ type Props = {
   open: boolean
   type: TableStates
   handleClose: () => void
-  selectedId: number
+  selectedId: string
 }
 const PPHCCASEDetails2Page = ({
   handleOpen,
@@ -154,7 +154,7 @@ const PPHCCASEDetails2Page = ({
   }
 
   useEffect(() => {
-    if (selectedId !== 0) {
+    if (selectedId !== '') {
       getCallMedicalDetails({
         requestID: String(selectedId),
       })
@@ -190,7 +190,7 @@ const PPHCCASEDetails2Page = ({
   }
 
   useEffect(() => {
-    if (selectedId !== 0) {
+    if (selectedId !== '') {
       getCallDispositionsMedical()
     }
   }, [selectedId, handleControls1])

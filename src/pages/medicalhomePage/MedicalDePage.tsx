@@ -9,7 +9,7 @@ const MedicalDePage = (props: Props) => {
   //Modal Open and Close
   const [open, setOpen] = useState(false)
   const [type, setType] = useState<any>(undefined)
-  const [selectedId, setSelectedId] = useState(0)
+  const [selectedId, setSelectedId] = useState(null)
   const { state } = useLocation()
   //Modal changes function
   const handleOpen = () => setOpen(true)
