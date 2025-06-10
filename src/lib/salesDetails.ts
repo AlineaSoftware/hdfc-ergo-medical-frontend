@@ -99,36 +99,33 @@ export const getAllDetails = async (
 export const insertDetails = async (
   loading: LoadingState['setLoading'],
   toast: ShowToastFunction,
+  caseId: string,
   formData: {
-    requestID: string
-    AppointmentDate: string
-    appointmentTime: string
+    apptDateTime: string
     agentName: string
-    agentMobileNumber: string
+    agentNumber: string
     language: string
-    dcPincode: string
-    dcName: string
   },
 ) => {
   try {
     loading({ isLoading: true, isPage: false })
 
-    const params = {
-      flag: 1,
-      providerID: 0,
-      apptState: 0,
-    }
+    // const params = {
+    //   flag: 1,
+    //   providerID: 0,
+    //   apptState: 0,
+    // }
 
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify(formData), VITE_APP_SECRET_KEY),
-    }
-
-    const res = await axiosUnAuth.post(SALES_DETAILS.insertAllDetails, requestBody, {
-      params,
-    })
+    // const requestBody = {
+    //   encryptedData: encryptDetails(JSON.stringify(formData), VITE_APP_SECRET_KEY),
+    // }
+    const URL = `${SALES_DETAILS.insertAllDetails}/${caseId}`
+    const res = await axiosInstance.put(URL, formData)
 
     if (res.data.status === 400) {
       toast('error', res.data.message)
+    } else {
+      toast('success', COMMON_MESSAGE.Submit)
     }
 
     return res.data
@@ -156,8 +153,6 @@ export const callDispositions = async (
     const res = await axiosInstance.get(URL)
     if (res?.data?.status === 400) {
       toast('error', res.data.message)
-    } else {
-      toast('success', COMMON_MESSAGE.Submit)
     }
     return res?.data
   } catch (error: any) {
@@ -187,8 +182,6 @@ export const proposerStatus = async (
     const res = await axiosInstance.get(URL)
     if (res?.data?.status === 400) {
       toast('error', res.data.message)
-    } else {
-      toast('success', COMMON_MESSAGE.Submit)
     }
     return res?.data
   } catch (error: any) {

@@ -38,8 +38,6 @@ const SalesLogIn = ({}: Props) => {
       localStorage.setItem('sales', JSON.stringify(data?.proposalNum))
       nav('/salesteamdashboard')
       localStorage.setItem('salesRedirect', JSON.stringify(true))
-    } else {
-      showToast('error', res?.message)
     }
   }
 

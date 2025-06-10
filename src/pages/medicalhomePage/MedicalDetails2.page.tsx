@@ -234,6 +234,13 @@ const MedicalDetails2Page = ({
     }
   }, [selectedId, handleControls1])
 
+  const genderMap = {
+    m: 'male',
+    f: 'female',
+    male: 'male',
+    female: 'female',
+  }
+
   return (
     <Box>
       {/* {data
@@ -256,7 +263,9 @@ const MedicalDetails2Page = ({
               <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
                 Gender
               </div>
-              <div className='w-[50%] break-words pl-2 sm:text-xs'>{data?.gender}</div>
+              <div className='w-[50%] break-words pl-2 sm:text-xs'>
+                {genderMap[data?.gender?.toLowerCase()]}
+              </div>
             </div>
             <div className='flex justify-center'>
               <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>Age</div>

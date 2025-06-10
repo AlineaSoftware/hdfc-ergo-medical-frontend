@@ -50,7 +50,7 @@ type Props = {
   pathPermission: string[]
   viewNotRequired: boolean
   onRowClick?: (row: any) => void
-  selectedId?: number
+  selectedId?: string
   showSelectedRowBg?: boolean
   DownLoadAudio: (item: any) => void
   DownLoadReport: (item: any) => void

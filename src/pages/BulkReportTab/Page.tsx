@@ -28,7 +28,14 @@ import { dateSelectValidation } from 'src/utils/form.validation'
 import Search from '@/components/Search'
 import RadioInput from '@/components/RadioInput'
 import { DateTimeInput } from 'src/components/DateTime'
-import { differenceInDays, endOfMonth, startOfDay, startOfMonth, startOfYear } from 'date-fns'
+import {
+  differenceInDays,
+  endOfMonth,
+  format,
+  startOfDay,
+  startOfMonth,
+  startOfYear,
+} from 'date-fns'
 import { MedicalBulkReport } from 'src/lib/medicalDetails'
 import CustomAudioPlayer from 'src/components/AudioPlayer'
 
@@ -84,29 +91,29 @@ const BulkReport = ({
     defaultValues: {
       startDate: getTodayAtMidnight(),
       endDate: getTodayWithCurrentTime(),
-      division: 'TUW',
+      division: '',
     },
   })
 
   const onSubmitHandle: SubmitHandler<any> = async (data) => {
     const { startDate, endDate } = data
 
-    if (!startDate || !endDate) {
-      showToast('error', 'Please select both From Date and To Date.')
-      return
-    }
+    // if (!startDate || !endDate) {
+    //   showToast('error', 'Please select both From Date and To Date.')
+    //   return
+    // }
 
     const diffInDays = differenceInDays(new Date(endDate), new Date(startDate))
 
-    if (diffInDays < 0) {
-      showToast('error', 'To Date cannot be earlier than From Date.')
-      return
-    }
+    // if (diffInDays < 0) {
+    //   showToast('error', 'To Date cannot be earlier than From Date.')
+    //   return
+    // }
 
-    if (diffInDays > 2) {
-      showToast('error', 'You can only search for a maximum of 2 days.')
-      return
-    }
+    // if (diffInDays > 2) {
+    //   showToast('error', 'You can only search for a maximum of 2 days.')
+    //   return
+    // }
 
     await getData(data)
   }
@@ -147,13 +154,12 @@ const BulkReport = ({
   // }
 
   const getData = async (data) => {
-    const token = localStorage.getItem('token')
+    // const token = localStorage.getItem('token')
     const response = await MedicalBulkReport(setLoading, showToast, {
       ...handleControls,
-      // startDate: data?.startDate ? formatDate(data.startDate) : '',
-      // endDate: data?.endDate ? formatDate(data.endDate) : '',
-      // division: data?.division ?? '',
-      // token: token,
+      ...(data?.startDate && { fromDate: data?.startDate }),
+      ...(data?.endDate && { toDate: data?.endDate }),
+      ...(data?.division && { tpaName: data?.division }),
     })
 
     // Handle the response data
@@ -185,10 +191,11 @@ const BulkReport = ({
     const a = getValues('startDate')
     const b = getValues('endDate')
     const c = getValues('division')
+    console.log({ a })
     getData({
       ...data,
-      startDate: a,
-      endDate: b,
+      startDate: format(a, 'yyyy/MM/dd'),
+      endDate: format(b, 'yyyy/MM/dd'),
       division: c,
     })
   }, [handleControls])
@@ -243,10 +250,11 @@ const BulkReport = ({
     //   render: (row: any) => console.log({ row }),
     // },
     {
-      id: 'closerDate',
+      id: 'closedDate',
       label: 'Closer Date',
       isSort: false,
       width: 80,
+      type: 'dateTime',
     },
   ]
 
@@ -313,7 +321,7 @@ const BulkReport = ({
         <div className='shadow-[0_4px_8px_rgba(0,0,0,0.25)] rounded-md'>
           <form onSubmit={handleSubmit(onSubmitHandle)}>
             <div className='flex justify-between items-center p-3 bg-white-main rounded-t-md'>
-              <div className='flex justify-around items-center  p-3'>
+              <div className='flex justify-around items-center space-x-2 p-3'>
                 <DateTimeInput
                   clearErrors={clearErrors}
                   control={control}
@@ -322,10 +330,11 @@ const BulkReport = ({
                   name='startDate'
                   setError={setError}
                   validation={dateSelectValidation('From Date', true)}
-                  sx={{ minWidth: '350px' }}
-                  showClearButton={false}
-                  minDate={startOfMonth(new Date())} // Start of the current month
-                  maxDate={endOfMonth(new Date())}
+                  sx={{ minWidth: '250px' }}
+                  showClearButton={true}
+                  // minDate={startOfMonth(new Date())} // Start of the current month
+                  // maxDate={endOfMonth(new Date())}
+                  minDate={startOfYear(new Date(2024, 0, 1))}
                 />
                 <DateTimeInput
                   clearErrors={clearErrors}
@@ -335,14 +344,15 @@ const BulkReport = ({
                   name='endDate'
                   setError={setError}
                   validation={dateSelectValidation('To Date', true)}
-                  sx={{ minWidth: '350px' }}
-                  minDate={new Date(startDateWatch) || null} // Start date
-                  maxDate={
-                    new Date(
-                      new Date(startDateWatch).setDate(new Date(startDateWatch).getDate() + 1),
-                    ) || null
-                  } // One day after start date
-                  showClearButton={false}
+                  sx={{ minWidth: '250px' }}
+                  // minDate={new Date(startDateWatch) || null} // Start date
+                  // maxDate={
+                  //   new Date(
+                  //     new Date(startDateWatch).setDate(new Date(startDateWatch).getDate() + 1),
+                  //   ) || null
+                  // } // One day after start date
+                  minDate={new Date(startDateWatch) || null}
+                  showClearButton={true}
                 />
               </div>
               <RadioInput name='division' label='Division' control={control} radios={radios} />

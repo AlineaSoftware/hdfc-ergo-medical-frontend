@@ -13,6 +13,7 @@ const SalesTeamPage = (props: Props) => {
   const [open, setOpen] = useState(false)
   const [type, setType] = useState<any>(undefined)
   const [selectedId, setSelectedId] = useState(null)
+  const [schedule, setSchedule] = useState(false)
   const { setLoading } = useLoading()
   const showToast = useToast()
   const { setNotFound, notFound } = useNotFound()
@@ -47,7 +48,7 @@ const SalesTeamPage = (props: Props) => {
 
   useEffect(() => {
     getUserData()
-  }, [])
+  }, [schedule])
 
   const getAllData = async (item: any) => {
     const response = await getAllDetails(setLoading, showToast, item)
@@ -86,6 +87,8 @@ const SalesTeamPage = (props: Props) => {
         data={data}
         dataset={dataset}
         controls={controls}
+        setSchedule={setSchedule}
+        schedule={schedule}
       />
       <SalesTeam2Data
         handleOpen={handleOpen}

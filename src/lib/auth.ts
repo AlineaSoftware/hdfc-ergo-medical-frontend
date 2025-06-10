@@ -10,6 +10,7 @@ import {
 import axiosInstance, { axiosUnAuth } from '../axiosInstance'
 import { encryptDetails } from 'src/utils/constants'
 import { VITE_APP_SECRET_KEY } from 'src/utils/envVariables'
+import { COMMON_MESSAGE } from 'src/utils/commonMessages'
 
 export const loginUser = async (
   loading: LoadingState['setLoading'],
@@ -21,6 +22,8 @@ export const loginUser = async (
     const res = await axiosUnAuth.post(AUTH_ENDPOINT.Login, formData)
     if (res.data.status === 400) {
       toast('error', res.data.message)
+    } else {
+      toast('success', COMMON_MESSAGE.Login)
     }
     return res.data
   } catch (error: any) {
@@ -121,6 +124,8 @@ export const salesLogin = async (
     const res = await axiosUnAuth.post(AUTH_ENDPOINT.salesLogin, formData)
     if (res.data.status === 400) {
       toast('error', res.data.message)
+    } else {
+      toast('success', COMMON_MESSAGE.Login)
     }
     return res.data
   } catch (error: any) {

@@ -11,7 +11,7 @@ export const enum AUTH_ENDPOINT {
 export const enum SALES_DETAILS {
   getUserList = '/sales/cases/list',
   getAllDetails = '/sales/cases/details',
-  insertAllDetails = '/HDFCERGO/InsertApptDetails',
+  insertAllDetails = '/sales/cases/reschedule',
   callDisposition = '/sales/cases/call-disposition',
   proposerStatus = '/sales/cases/status',
   callDetails = '/HDFCERGO/GetCallDetails',
