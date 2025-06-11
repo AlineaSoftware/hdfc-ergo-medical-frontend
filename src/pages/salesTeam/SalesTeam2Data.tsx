@@ -54,7 +54,7 @@ const SalesTeam2Data = ({
 
   const headCells: HeadCell[] = [
     {
-      id: 'oldStatus',
+      id: 'newStatus',
       label: 'Status',
       isSort: false,
       width: 50,
@@ -211,7 +211,7 @@ const SalesTeam2Data = ({
                 Gender
               </div>
               <div className='w-[50%] break-words pl-2 sm:text-xs'>
-                {genderMap[dataset?.data?.openCaseId?.gender?.toLowerCase()]}
+                {genderMap[dataset?.data?.gender?.toLowerCase()]}
               </div>
             </div>
             <div className='flex justify-end'>
@@ -219,6 +219,12 @@ const SalesTeam2Data = ({
               <div className='w-[50%] break-words pl-2 sm:text-xs'>
                 {dataset?.data?.age ? `${dataset?.data?.age} Years` : 'N/A'}
               </div>
+            </div>
+            <div className='flex justify-center'>
+              <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs'>
+                Product
+              </div>
+              <div className='w-[50%] pl-2 sm:text-xs'>{dataset?.data?.productName}</div>
             </div>
             <div className='flex justify-end'>
               <div className='w-[33%] border-r pr-2 text-right font-semibold sm:text-xs break-words'>

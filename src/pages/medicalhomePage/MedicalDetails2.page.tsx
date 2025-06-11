@@ -85,7 +85,7 @@ const MedicalDetails2Page = ({
 
   const headCells: HeadCell[] = [
     {
-      id: 'oldStatus',
+      id: 'newStatus',
       label: 'Status',
       isSort: false,
       width: 50,
