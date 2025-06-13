@@ -22,13 +22,13 @@ const ForgetPassword = ({}: Props) => {
   const showToast = useToast()
   const { control, handleSubmit, getValues, setValue } = useForm({
     defaultValues: {
-      emailId: '',
+      email: '',
     },
   })
   const onSubmitHandle: SubmitHandler<ForgetPassFields> = async (data) => {
     const res = await forgotPassword(setLoading, showToast, data)
-    if (res?.validEmailData?.isValid) {
-      showToast('success', 'Reset link sent to your email and mobile.')
+    if (res) {
+      showToast('success', res?.message)
       nav(AUTH_PATH.LOGIN)
     } else {
       showToast('error', 'Invalid email address, please try again')
@@ -49,7 +49,7 @@ const ForgetPassword = ({}: Props) => {
         <form onSubmit={handleSubmit(onSubmitHandle)}>
           <TxtInput
             control={control}
-            name='emailId'
+            name='email'
             handleChange={() => {}}
             placeholder='Enter Email'
             sx={{ minWidth: 300, marginBottom: '20px' }}

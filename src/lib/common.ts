@@ -138,22 +138,36 @@ export const downloadExcel = async (
 
     const url = `${MSI.Export_Excel}?${new URLSearchParams(params).toString()}`
 
-    const res = await axiosInstance.get(url)
+    // Make the request for binary data
+    const res = await axiosInstance.get(url, { responseType: 'arraybuffer' })
+
     if (res?.data?.status === 400) {
       toast('error', res.data.message)
     } else {
+      // Handle file download
+      const blob = new Blob([res.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.download = 'exported_file.xlsx' // You can customize the filename here
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
       toast('success', COMMON_MESSAGE.Submit)
     }
+
     return res?.data
   } catch (error: any) {
     console.log(error)
-    if (error.response.status === 400) {
+    if (error.response?.status === 400) {
       toast('error', error.response.data.message)
-    } else if (error.response.status === 401) {
+    } else if (error.response?.status === 401) {
       toast('error', 'Unauthorized access. Please log in again.')
       localStorage.clear()
     } else {
-      toast('error', error.response.statusText)
+      toast('error', error.response?.statusText || 'Unknown error')
     }
   } finally {
     loading({ isLoading: false, isPage: false })

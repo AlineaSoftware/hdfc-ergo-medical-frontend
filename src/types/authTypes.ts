@@ -20,13 +20,12 @@ export type SignUpFormFields = {
 }
 
 export type ForgetPassFields = {
-  emailId: string
+  email: string
 }
 
 export type ResetPasswordFields = {
-  newPassword: string
-  confirmPassword: string
-  loginId: number
+  password: string
+  confirm_password: string
 }
 
 export type SalesLogin = {

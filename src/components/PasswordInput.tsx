@@ -1,5 +1,5 @@
 import { IconButton, InputAdornment, SxProps, TextField, Theme } from '@mui/material'
-import { Controller, Control } from 'react-hook-form'
+import { Controller, Control, useFormContext } from 'react-hook-form'
 import { useState } from 'react'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
@@ -17,6 +17,7 @@ type Props = {
   handleClick?: () => void
   readonly?: boolean
   autoComplete?: boolean
+  touchedFields?: Partial<Record<string, boolean>>
 }
 
 const PasswordInput = ({
@@ -32,12 +33,15 @@ const PasswordInput = ({
   handleClick,
   readonly,
   autoComplete,
+  touchedFields,
 }: Props) => {
   //Hide and show passowrd
   const [showPassword, setShowPassword] = useState(false)
   const toggleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword)
   }
+  const isTouched = touchedFields?.[name]
+
   const inputStyleProps: SxProps<Theme> = { ...sx, width: '100%', marginTop: '5px' }
   return (
     <Controller
@@ -61,8 +65,8 @@ const PasswordInput = ({
               }}
               type={showPassword ? 'text' : 'password'}
               placeholder={placeholder}
-              error={fieldState.invalid}
-              // helperText={fieldState.error?.message || ''}
+              error={fieldState.invalid && isTouched}
+              helperText={fieldState.invalid && isTouched ? fieldState.error?.message : ''}
               disabled={isDisabled ?? false}
               sx={inputStyleProps}
               multiline={multiline ? true : false}

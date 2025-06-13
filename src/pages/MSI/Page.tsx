@@ -60,6 +60,10 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
       division: 'TUW',
     },
   })
+  const [exportEnabled, setExportEnabled] = useState(true)
+  const startDate = watch('startDate')
+  const endDate = watch('endDate')
+  const division = watch('division')
 
   const formatDate = (date) => {
     const localDate = new Date(date)
@@ -68,44 +72,17 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
   }
 
   const onSubmitHandle: SubmitHandler<any> = async (data) => {
-    const token = localStorage.getItem('token')
-    if (!data.startDate || !data.endDate) {
-      showToast('error', 'Please select both From Date and To Date.')
-      return
-    }
-
-    const diffInDays = differenceInDays(new Date(data.endDate), new Date(data.startDate))
-
-    if (diffInDays < 0) {
-      showToast('error', 'To Date cannot be earlier than From Date.')
-      return
-    }
-
-    if (diffInDays > 30) {
-      showToast('error', 'You can only search for a maximum of 1 months.')
-      return
-    }
-
-    if (token) {
-      const response = await getDetailsOfMsi(setLoading, showToast, {
-        startDate: data?.startDate ? formatDate(data.startDate) : '',
-        endDate: data?.endDate ? formatDate(data.endDate) : '',
-        division: data?.division ?? '',
-        token: token,
+    try {
+      const res = await downloadExcel(setLoading, showToast, {
+        fromDate: startDate,
+        toDate: endDate,
+        tpaName: division,
       })
-
-      if (response) {
-        // console.log(response, 'response')
-        const { getMISDetailsData } = response
-        if (getMISDetailsData.length === 0) {
-          setNotFound([TABLES.MEDICAL_CHECK])
-        } else {
-          setNotFound([])
-          setData(getMISDetailsData)
-        }
-      } else {
-        setData([])
+      if (res) {
+        alert('Excel file downloaded successfully!')
       }
+    } catch (error) {
+      return {}
     }
   }
 
@@ -128,21 +105,6 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
       name: 'PPHC',
     },
   ]
-  const startDateWatch = watch('startDate')
-  // console.log(startDateWatch)
-
-  const download = async () => {
-    try {
-      debugger
-      const res = await downloadExcel(setLoading, showToast, {})
-      console.log({ res })
-      if (res) {
-        alert('Excel file downloaded successfully!')
-      }
-    } catch (error) {
-      return {}
-    }
-  }
 
   return (
     <>
@@ -167,6 +129,7 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
                   sx={{ minWidth: '350px' }}
                   showClearButton={false}
                   minDate={startOfYear(new Date(2024, 0, 1))}
+                  maxDate={new Date()}
                 />
                 <DateInput
                   clearErrors={clearErrors}
@@ -186,7 +149,12 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
 
               <div className='flex justify-center'>
                 <div className='h-[10%] text-center flex justify-center p-3'>
-                  <Button color='mBlue' sx={{ color: theme.palette.mWhite.main }} type='submit'>
+                  <Button
+                    color='mBlue'
+                    sx={{ color: theme.palette.mWhite.main }}
+                    onClick={() => setExportEnabled(false)}
+                    disabled={!startDate || !endDate}
+                  >
                     Search
                   </Button>
                 </div>
@@ -206,18 +174,18 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
                   </a>
                 </div> */}
 
-                {watch('division') === 'TUW' ? (
-                  <div className='h-[10%] text-center flex justify-center p-3'>
-                    <Button
-                      color='mBlue'
-                      sx={{ color: theme.palette.mWhite.main }}
-                      onClick={download}
-                      disabled={data?.length > 0 ? false : true}
-                    >
-                      Export Excel
-                    </Button>
-                  </div>
-                ) : (
+                {/* {watch('division') === 'TUW' ? ( */}
+                <div className='h-[10%] text-center flex justify-center p-3'>
+                  <Button
+                    color='mBlue'
+                    sx={{ color: theme.palette.mWhite.main }}
+                    type='submit'
+                    disabled={exportEnabled}
+                  >
+                    Export Excel
+                  </Button>
+                </div>
+                {/* ) : (
                   <div className='h-[10%] text-center flex justify-center p-3'>
                     <a href='https://api.life-connect.in/Reports/HDFCERGOPPHC.xlsb' download>
                       <Button color='mBlue' sx={{ color: theme.palette.mWhite.main }}>
@@ -225,7 +193,7 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
                       </Button>
                     </a>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </form>

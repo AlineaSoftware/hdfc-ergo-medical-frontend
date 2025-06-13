@@ -17,22 +17,33 @@ const ResetPassword = () => {
   const { setLoading } = useLoading()
   const showToast = useToast()
   const user = JSON.parse(localStorage.getItem('users'))
-  const { control, handleSubmit, setValue, watch, getValues } = useForm({
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    getValues,
+    formState: { touchedFields },
+  } = useForm({
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     defaultValues: {
-      newPassword: '',
-      confirmPassword: '',
+      password: '',
+      confirm_password: '',
     },
   })
+  const [searchParams] = useSearchParams()
+  const token = searchParams.get('token') || ''
+  const passwordValue = watch('password')
+  const confirmPasswordValue = watch('confirm_password')
 
   const onSubmitHandle: SubmitHandler<ResetPasswordFields> = async (data) => {
-    const loginId = user?.loginId
-    const res = await resetPassword(setLoading, showToast, { ...data, loginId })
-
-    if (res?.changePasswordData?.passwordChanged) {
+    const response = await resetPassword(setLoading, showToast, { token: token }, data)
+    if (response?.status) {
       nav('/login')
-      showToast('success', res?.changePasswordData?.statusMessage)
+      showToast('success', response?.message)
     } else {
-      showToast('info', res?.changePasswordData?.statusMessage)
+      showToast('info', response?.message)
     }
   }
   return (
@@ -47,30 +58,38 @@ const ResetPassword = () => {
         <form onSubmit={handleSubmit(onSubmitHandle)}>
           <PasswordInput
             control={control}
-            name='newPassword'
+            name='password'
             handleChange={() => {}}
             placeholder='Enter New Password'
             sx={{ minWidth: 300, marginBottom: '10px' }}
-            validation={txtFieldValidation(true)}
+            validation={txtFieldValidation(true, 'Password')}
             label='New Password*'
             // isDisabled={!isVerified}
+            touchedFields={touchedFields}
           />
 
           <PasswordInput
             control={control}
-            name='confirmPassword'
+            name='confirm_password'
             handleChange={() => {}}
             placeholder='Enter Confirm Password'
             sx={{ minWidth: 300, marginBottom: '10px' }}
-            validation={txtFieldValidation(true)}
+            validation={{
+              ...txtFieldValidation(true),
+              validate: (value) => value === passwordValue || 'Passwords do not match',
+            }}
             label='Confirm Password*'
             // isDisabled={!isVerified}
+            touchedFields={touchedFields}
           />
           <div className='text-center flex flex-col gap-2 mb-5'>
             <Button
               color='mBlue'
               sx={{ minWidth: '100%', color: theme.palette.mWhite.main }}
               type='submit'
+              disabled={
+                !passwordValue || !confirmPasswordValue || passwordValue !== confirmPasswordValue
+              }
             >
               Submit
             </Button>

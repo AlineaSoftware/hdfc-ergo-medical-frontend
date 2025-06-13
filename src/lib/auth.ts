@@ -46,11 +46,11 @@ export const forgotPassword = async (
   try {
     loading({ isLoading: true, isPage: false })
 
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify(formData), VITE_APP_SECRET_KEY),
-    }
+    // const requestBody = {
+    //   encryptedData: encryptDetails(JSON.stringify(formData), VITE_APP_SECRET_KEY),
+    // }
 
-    const res = await axiosUnAuth.post(AUTH_ENDPOINT.ForgotPassword, requestBody)
+    const res = await axiosUnAuth.post(AUTH_ENDPOINT.ForgotPassword, formData)
     if (res.data.status === 400) {
       toast('error', res.data.message)
     }
@@ -70,20 +70,21 @@ export const forgotPassword = async (
 export const resetPassword = async (
   loading: LoadingState['setLoading'],
   toast: ShowToastFunction,
+  params: Record<string, any>,
   formData: ResetPasswordFields,
 ) => {
   try {
     loading({ isLoading: true, isPage: false })
-
     // const data = {
     //   loginId: formData?.loginId,
     //   newPassword: formData?.newPassword,
     //   confirmPassword: formData?.confirmPassword,
     // }
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify(formData), VITE_APP_SECRET_KEY),
-    }
-    const res = await axiosUnAuth.post(AUTH_ENDPOINT.ResetPassword, requestBody)
+    // const requestBody = {
+    //   encryptedData: encryptDetails(JSON.stringify(formData), VITE_APP_SECRET_KEY),
+    // }
+    const URL = `${AUTH_ENDPOINT.ResetPassword}?${new URLSearchParams(params).toString()}`
+    const res = await axiosUnAuth.post(URL, formData)
     if (res.data.status === 400) {
       toast('error', res.data.message)
     }
