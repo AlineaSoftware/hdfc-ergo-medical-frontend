@@ -122,7 +122,7 @@ const TableHeader = ({
                       color: theme.palette.mBlack?.main,
                       fontWeight: '600',
                       fontSize: '14px',
-                      marginRight: headCell.type === 'checkBox' ? '8px' : '1px',
+                      marginRight: headCell.type === 'checkBox' ? '-20px' : '1px',
                     }}
                   >
                     {`${headCell.label}`} <br /> {`${headCell.secondLineLabel ?? ''}`}
