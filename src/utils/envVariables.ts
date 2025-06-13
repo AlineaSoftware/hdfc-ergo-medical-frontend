@@ -5,4 +5,5 @@ export const {
   VITE_APP_FRONTEND_URL_LIVE,
   MAP_KEY,
   VITE_APP_SECRET_KEY,
+  VITE_APP_IMAGE_GET,
 } = import.meta.env

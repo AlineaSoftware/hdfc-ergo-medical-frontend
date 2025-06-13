@@ -41,7 +41,10 @@ import CustomAudioPlayer from 'src/components/AudioPlayer'
 
 import { MEDICAL_DETAILS } from 'src/utils/endPoints'
 import axiosInstance from 'src/axiosInstance'
-import { VITE_APP_SECRET_KEY } from 'src/utils/envVariables'
+import { VITE_APP_IMAGE_GET, VITE_APP_SECRET_KEY } from 'src/utils/envVariables'
+import axios from 'axios'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 
 type Props = {
   handleOpen: () => void
@@ -294,33 +297,57 @@ const BulkReport = ({
     encryptedData: encryptDetails(JSON.stringify(requestDetails), VITE_APP_SECRET_KEY),
   }
   const handleDownload = async () => {
-    const a = await axiosInstance.post(MEDICAL_DETAILS.getMedicalBulkReportZip, requestBody)
-    if (a.data !== '') {
-      const content = a?.data.match(/https?:\/\/[^\s]+/)[0]
-      const link = document.createElement('a')
-      link.href = content
-      link.download = `${new Date()} bulk_download.zip`
-      link.click()
-    }
+    const filePaths = selectedRows.map((item) => item.tranScriptUrl.destination)
+
+    const baseURL = VITE_APP_IMAGE_GET
+    const token = localStorage.getItem('token') // Replace with your token
+
+    const zip = new JSZip()
+
+    // Fetch and add all PDFs to the zip
+    await Promise.all(
+      filePaths.map(async (path) => {
+        const fileName = path.split('/').pop() // Just filename
+        const fullUrl = `${baseURL}${encodeURIComponent(path)}`
+
+        try {
+          const response = await axios.get(fullUrl, {
+            responseType: 'blob',
+            headers: {
+              Authorization: `Bearer ${token}`, // Adjust header if needed
+            },
+          })
+
+          zip.file(fileName, response.data)
+        } catch (error) {
+          console.error(`Failed to fetch ${fileName}:`, error)
+        }
+      }),
+    )
+
+    // Generate ZIP and trigger download
+    zip.generateAsync({ type: 'blob' }).then((zipFile) => {
+      saveAs(zipFile, 'documents.zip')
+    })
   }
 
   const handleDownLoadAudio = async (item) => {
-    const requestDetailsAudio = {
-      RequestID: String(item.requestID),
-      AudioUrl: item?.audio,
-      InsurerDivisionName: item?.insurerDivisionName,
-      ProposalNo: item?.proposalNo,
-      Insured: item?.insured,
-    }
-    const intoArray = [requestDetailsAudio]
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify(intoArray), VITE_APP_SECRET_KEY),
-    }
-    const a = await axiosInstance.post(MEDICAL_DETAILS.getMedicalAudioDownload, requestBody)
-    if (a.data !== '') {
-      const content = a?.data.match(/https?:\/\/[^\s]+/)[0]
-      window.open(content, '_blank')
-    }
+    // const requestDetailsAudio = {
+    //   RequestID: String(item.requestID),
+    //   AudioUrl: item?.audio,
+    //   InsurerDivisionName: item?.insurerDivisionName,
+    //   ProposalNo: item?.proposalNo,
+    //   Insured: item?.insured,
+    // }
+    // const intoArray = [requestDetailsAudio]
+    // const requestBody = {
+    //   encryptedData: encryptDetails(JSON.stringify(intoArray), VITE_APP_SECRET_KEY),
+    // }
+    // const a = await axiosInstance.post(MEDICAL_DETAILS.getMedicalAudioDownload, requestBody)
+    // if (a.data !== '') {
+    //   const content = a?.data.match(/https?:\/\/[^\s]+/)[0]
+    //   window.open(content, '_blank')
+    // }
   }
 
   return (
