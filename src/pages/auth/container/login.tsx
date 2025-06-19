@@ -63,6 +63,7 @@ const LogIn = ({}: Props) => {
       password: data?.password,
       deviceType: 'WEB',
       notificationToken: '',
+      portalLogin: 'MEDICAL',
     }
 
     // const token = uuidv4()
