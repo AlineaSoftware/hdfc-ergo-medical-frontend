@@ -233,7 +233,8 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
     },
   ]
   const startDateWatch = watch('startDate')
-  // console.log(startDateWatch)
+  const endDateWatch = watch('endDate')
+
   return (
     <>
       <Box>
@@ -257,6 +258,7 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
                   sx={{ minWidth: '250px' }}
                   showClearButton={true}
                   minDate={startOfYear(new Date(2024, 0, 1))}
+                  maxDate={endDateWatch ? new Date(endDateWatch) : undefined}
                 />
                 <DateInput
                   clearErrors={clearErrors}
@@ -267,7 +269,7 @@ const MedicalHomePage = ({ handleOpen, setType, open, type, handleClose }: Props
                   setError={setError}
                   validation={dateSelectValidation('To Date', true)}
                   sx={{ minWidth: '250px' }}
-                  minDate={new Date(startDateWatch) || null}
+                  minDate={startDateWatch ? new Date(startDateWatch) : undefined}
                   showClearButton={true}
                 />
               </div>

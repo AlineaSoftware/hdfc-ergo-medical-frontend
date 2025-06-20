@@ -217,6 +217,7 @@ const BulkReport = ({
   }, [handleControls])
 
   const startDateWatch = watch('startDate')
+  const endDateWatch = watch('endDate')
 
   const headCells: HeadCell[] = [
     {
@@ -375,6 +376,7 @@ const BulkReport = ({
                   // minDate={startOfMonth(new Date())} // Start of the current month
                   // maxDate={endOfMonth(new Date())}
                   minDate={startOfYear(new Date(2024, 0, 1))}
+                  maxDate={endDateWatch ? new Date(endDateWatch) : undefined}
                 />
                 <DateTimeInput
                   clearErrors={clearErrors}
@@ -391,7 +393,7 @@ const BulkReport = ({
                   //     new Date(startDateWatch).setDate(new Date(startDateWatch).getDate() + 1),
                   //   ) || null
                   // } // One day after start date
-                  minDate={new Date(startDateWatch) || null}
+                  minDate={startDateWatch ? new Date(startDateWatch) : undefined}
                   showClearButton={true}
                 />
               </div>

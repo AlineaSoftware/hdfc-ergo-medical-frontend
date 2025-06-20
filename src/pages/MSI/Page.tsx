@@ -106,6 +106,9 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
     },
   ]
 
+  const startDateWatch = watch('startDate')
+  const endDateWatch = watch('endDate')
+
   return (
     <>
       <Box>
@@ -129,7 +132,11 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
                   sx={{ minWidth: '350px' }}
                   showClearButton={false}
                   minDate={startOfYear(new Date(2024, 0, 1))}
-                  maxDate={new Date()}
+                  maxDate={
+                    endDateWatch
+                      ? new Date(Math.min(new Date(endDateWatch).getTime(), new Date().getTime()))
+                      : new Date()
+                  }
                 />
                 <DateInput
                   clearErrors={clearErrors}
@@ -141,6 +148,7 @@ const Msi = ({ handleOpen, setType, open, type, handleClose }: Props) => {
                   validation={dateSelectValidation('To Date', true)}
                   sx={{ minWidth: '350px' }}
                   // minDate={new Date(startDateWatch)}
+                  minDate={startDateWatch ? new Date(startDateWatch) : undefined}
                   maxDate={new Date()}
                   showClearButton={false}
                 />
