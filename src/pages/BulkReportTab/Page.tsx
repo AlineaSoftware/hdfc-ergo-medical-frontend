@@ -443,9 +443,7 @@ const BulkReport = ({
               >
                 <CustomAudioPlayer
                   audioSource={(() => {
-                    console.log('🔵 selectedId:', selectedId)
                     const selectedRow = data?.find((x) => x._id === selectedId)
-                    console.log('🟢 selectedRow:', selectedRow)
                     const sortedCalls = [...(selectedRow?.agentCalls || [])].sort(
                       (a, b) => new Date(b.StartTime).getTime() - new Date(a.StartTime).getTime(),
                     )
