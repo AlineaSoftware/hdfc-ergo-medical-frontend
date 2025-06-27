@@ -1,5 +1,3 @@
-import HomeDataOfCase from 'src/data/homeDataDetails'
-import { Box, Button, DialogTitle } from '@mui/material'
 import Table from '@/components/Table'
 import {
   ACTIONS_TABLE,
@@ -9,23 +7,19 @@ import {
   TABLE_STATES,
   TableStates,
 } from '@/types/common'
+import { Box, Button } from '@mui/material'
 
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { encryptDetails, EUserRoleHDFcErgo, limitOfPage, TABLES } from 'src/utils/constants'
 import { useNotFound } from '@/context/NotFound'
-import MedicalDetails2Page from './MedicalDetails2.page'
-import { theme } from 'src/context/ThemeProvider'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-import CustomDialog from 'src/components/Dialog-custom'
-import CustomAudioPlayer from 'src/components/AudioPlayer'
-import audioTesting from '/audio/file_example_MP3_700KB.mp3'
-import { getMedicalUserDetails } from 'src/lib/medicalDetails'
-import { useLoading } from 'src/context/LoadingContext'
 import { useToast } from '@/hooks/useToast'
-import { VITE_APP_SECRET_KEY } from 'src/utils/envVariables'
-import axiosInstance from 'src/axiosInstance'
-import { MEDICAL_DETAILS } from 'src/utils/endPoints'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import CustomAudioPlayer from 'src/components/AudioPlayer'
+import CustomDialog from 'src/components/Dialog-custom'
+import { useLoading } from 'src/context/LoadingContext'
+import { theme } from 'src/context/ThemeProvider'
+import { profileGet } from 'src/lib/common'
+import { getMedicalUserDetails } from 'src/lib/medicalDetails'
+import { TABLES } from 'src/utils/constants'
 
 type Props = {
   handleOpen: () => void
@@ -66,7 +60,6 @@ const MedicalDetailsPage = ({
 
   const getUserData = async () => {
     const loginValue = state?.proposalNo
-    const token = localStorage.getItem('token')
     if (loginValue) {
       const response = await getMedicalUserDetails(setLoading, showToast, state?._id, {})
 
@@ -174,118 +167,103 @@ const MedicalDetailsPage = ({
     setSelectedId(row?._id)
   }
 
-  const handleDownLoadAudio = async (item) => {
-    // console.log('item,,,,', item)
-    const requestDetailsAudio = {
-      RequestID: String(item.requestId),
-      AudioUrl: item?.audio,
-      InsurerDivisionName: item?.insurerDivisionName,
-      ProposalNo: item?.proposalNo,
-      Insured: item?.insured,
-    }
-    const intoArray = [requestDetailsAudio]
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify(intoArray), VITE_APP_SECRET_KEY),
-    }
-    const a = await axiosInstance.post(MEDICAL_DETAILS.getMedicalAudioDownload, requestBody)
-    if (a.data !== '') {
-      const content = a?.data.match(/https?:\/\/[^\s]+/)[0]
-      window.open(content, '_blank')
-    }
-  }
+  // const handleDownLoadAudio = async (item) => {
+
+  //   console.log(item, 'item?????')
+  //   // if (a.data !== '') {
+  //   //   const content = a?.data.match(/https?:\/\/[^\s]+/)[0]
+  //   //   window.open(content, '_blank')
+  //   // }
+  // }
   const handleDownLoadReport = async (item) => {
-    const requestDetailsAudio = {
-      RequestID: String(item.requestId),
-      PdfUrl: item?.pdf,
-      InsurerDivisionName: item?.insurerDivisionName,
-      ProposalNo: item?.proposalNo,
-      Insured: item?.insured,
-    }
-    const intoArray = [requestDetailsAudio]
-    const requestBody = {
-      encryptedData: encryptDetails(JSON.stringify(intoArray), VITE_APP_SECRET_KEY),
-    }
-    const a = await axiosInstance.post(MEDICAL_DETAILS.getMedicalBulkReportZip, requestBody)
-    if (a.data !== '') {
-      const content = a?.data.match(/https?:\/\/[^\s]+/)[0]
-      const link = document.createElement('a')
-      link.href = content
-      link.download = `${new Date()} bulk_download.zip`
-      link.click()
-    }
+    profileGet(item?.tranScriptUrl?.destination)
   }
   return (
-    <Box>
-      <div className='flex justify-between items-center'>
-        <h1 className='font-medium text-2xl pt-5 pb-5'>{state?.tpaName} Case History</h1>
-        {/* <h1 className='font-medium text-2xl pt-5 pb-5'>Tele MER Case History</h1> */}
-        {/* <form onSubmit={handleSubmit(onSubmitHandle */}
-        <div className='text-center flex justify-center p-3'>
-          <Button
-            color='mBlue'
-            sx={{ color: theme.palette.mWhite.main }}
-            onClick={() => {
-              navigate('/dashboard')
-            }}
-          >
-            Back
-          </Button>
+   
+    (
+      <Box>
+        <div className='flex justify-between items-center'>
+          <h1 className='font-medium text-2xl pt-5 pb-5'>{state?.tpaName} Case History</h1>
+          {/* <h1 className='font-medium text-2xl pt-5 pb-5'>Tele MER Case History</h1> */}
+          {/* <form onSubmit={handleSubmit(onSubmitHandle */}
+          <div className='text-center flex justify-center p-3'>
+            <Button
+              color='mBlue'
+              sx={{ color: theme.palette.mWhite.main }}
+              onClick={() => {
+                navigate('/dashboard')
+              }}
+            >
+              Back
+            </Button>
+          </div>
+          {/* </form> */}
         </div>
-        {/* </form> */}
-      </div>
 
-      <div className='col-span-5'>
-        <div className='pt-4'>
-          <Table
-            handleOpen={handleOpen}
-            setType={setType}
-            setEntity={setEntity}
-            rows={data}
-            headCells={headCells}
-            controls={controls as Controls}
-            handleControls={handleControls}
-            setHandleControls={setHandleControls}
-            actions={[]}
-            tableHeading={{
-              tableId: TABLES.NEW_REQUEST,
-              tableName: 'Tele MER Case',
-            }}
-            notFound={notFound.includes(TABLES.NEW_REQUEST)}
-            btnTxtArray={[]}
-            isTableWithOutAction={true}
-            redirectPath={'/dashboard/medicalDetailsPage'}
-            onRowClick={handleRowClick}
-            selectedId={selectedId}
-            showSelectedRowBg={true}
-            DownLoadAudio={(item) => handleDownLoadAudio(item)}
-            DownLoadReport={(item) => handleDownLoadReport(item)}
-          />
+        <div className='col-span-5'>
+          <div className='pt-4'>
+            <Table
+              handleOpen={handleOpen}
+              setType={setType}
+              setEntity={setEntity}
+              rows={data}
+              headCells={headCells}
+              controls={controls as Controls}
+              handleControls={handleControls}
+              setHandleControls={setHandleControls}
+              actions={[
+                ACTIONS_TABLE.DOWNLOAD_AUDIO,
+                ACTIONS_TABLE.DOWNLOAD_REPORT,
+                ACTIONS_TABLE.PLAY,
+              ]}
+              tableHeading={{
+                tableId: TABLES.NEW_REQUEST,
+                tableName: 'Tele MER Case',
+              }}
+              notFound={notFound.includes(TABLES.NEW_REQUEST)}
+              btnTxtArray={[]}
+              // isTableWithOutAction={true}
+              redirectPath={'/dashboard/medicalDetailsPage'}
+              onRowClick={handleRowClick}
+              selectedId={selectedId}
+              showSelectedRowBg={true}
+              // DownLoadAudio={(item) => handleDownLoadAudio(item)}
+              DownLoadReport={(item) => handleDownLoadReport(item)}
+            />
 
-          {type === TABLE_STATES.PLAY && (
-            <>
-              <CustomDialog
-                action={{ component: null, isAction: false }}
-                handleClose={handleClose}
-                open={open}
-                header={{
-                  isHeader: true,
-                  component: <></>,
-                }}
-                maxWidth='xl'
-                dialogStyleProps={{
-                  minWidth: 450,
-                }}
-                type={undefined}
-              >
-                <CustomAudioPlayer
-                  audioSource={`${data?.find((x) => x.requestID === selectedId)?.audio}`}
-                />
-              </CustomDialog>
-            </>
-          )}
+            {type === TABLE_STATES.PLAY && (
+              <>
+                <CustomDialog
+                  action={{ component: null, isAction: false }}
+                  handleClose={handleClose}
+                  open={open}
+                  header={{
+                    isHeader: true,
+                    component: <></>,
+                  }}
+                  maxWidth='xl'
+                  dialogStyleProps={{
+                    minWidth: 450,
+                  }}
+                  type={undefined}
+                >
+                  <CustomAudioPlayer
+                    audioSource={(() => {
+                      const selectedRow = data?.find((x) => x._id === selectedId)
+                      const sortedCalls = [...(selectedRow?.agentCalls || [])].sort(
+                        (a, b) => new Date(b.StartTime).getTime() - new Date(a.StartTime).getTime(),
+                      )
+                      const latestAudio = sortedCalls[0]?.AudioFile
+                      return latestAudio || ''
+                    })()}
+                  />
+                </CustomDialog>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </Box>
+      </Box>
+    )
   )
 }
 

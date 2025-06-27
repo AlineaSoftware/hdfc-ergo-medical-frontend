@@ -155,23 +155,33 @@ export enum InsuranceDivisionEnum {
   TUW = 'TUW',
 }
 
-export function convertTo12HourFormat(dateString: string): string {
-  const [datePart, timePart] = dateString.split(' ')
-  const [day, month, year] = datePart.split('/').map(Number)
-  const [hour, minutes, seconds] = timePart.split(':').map(Number)
+// export function convertTo12HourFormat(dateString: string): string {
+//   const [datePart, timePart] = dateString.split(' ')
+//   const [day, month, year] = datePart.split('/').map(Number)
+//   const [hour, minutes, seconds] = timePart.split(':').map(Number)
 
-  const date = new Date(year, month - 1, day, hour, minutes, seconds)
+//   const date = new Date(year, month - 1, day, hour, minutes, seconds)
 
-  let hours12 = date.getHours()
-  const minutes12 = String(date.getMinutes()).padStart(2, '0')
-  const seconds12 = String(date.getSeconds()).padStart(2, '0')
+//   let hours12 = date.getHours()
+//   const minutes12 = String(date.getMinutes()).padStart(2, '0')
+//   const seconds12 = String(date.getSeconds()).padStart(2, '0')
 
-  const ampm = hours12 >= 12 ? 'PM' : 'AM'
-  hours12 = hours12 % 12
-  hours12 = hours12 ? hours12 : 12
+//   const ampm = hours12 >= 12 ? 'PM' : 'AM'
+//   hours12 = hours12 % 12
+//   hours12 = hours12 ? hours12 : 12
 
-  const formattedDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`
-  return `${formattedDate} ${hours12}:${minutes12}:${seconds12} ${ampm}`
+//   const formattedDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`
+//   return `${formattedDate} ${hours12}:${minutes12}:${seconds12} ${ampm}`
+// }
+
+export const convertTo12HourFormat = (value: string | number | Date, dateFormat = 'dd/MM/yyyy hh:mm a'): string => {
+  if (!value) return ''
+  try {
+    const date = new Date(value)
+    return format(date, dateFormat)
+  } catch {
+    return ''
+  }
 }
 
 export const formatCurrency = (value) => {

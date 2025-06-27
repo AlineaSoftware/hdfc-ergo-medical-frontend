@@ -86,43 +86,6 @@ const TableContent = ({
 }: Props) => {
   const showToast = useToast()
   const { user } = useAuth()
-  // const [role, setRole] = useState(null)
-  // const [dRole, setDRole] = useState(null)
-  // const user = JSON.parse(localStorage.getItem('user'))
-
-  // const getUserUpdatePermissions = (permissions: Permissions) => {
-  //   const modulePermissions = {}
-
-  //   for (const [module, actions] of Object.entries(permissions)) {
-  //     modulePermissions[module] = actions.update
-  //   }
-
-  //   return modulePermissions
-  // }
-  // const getUserDeletePermissions = (permissions: Permissions) => {
-  //   const modulePermissions = {}
-
-  //   for (const [module, actions] of Object.entries(permissions)) {
-  //     modulePermissions[module] = actions.delete
-  //   }
-
-  //   return modulePermissions
-  // }
-  // useEffect(() => {
-  //   if (!user.systemAdmin) {
-  //     const p = JSON.parse(localStorage.getItem('permissions'))
-  //     if (p) {
-  //       const r = getUserUpdatePermissions(p)
-  //       const d = getUserDeletePermissions(p)
-  //       if (r) {
-  //         setRole(r)
-  //       }
-  //       if (d) {
-  //         setDRole(d)
-  //       }
-  //     }
-  //   }
-  // }, [])
   const handleChecked = (checked: boolean, row: any) => {
     if (selectedRows.find((x) => x.requestID == row.requestID)) {
       const arr = selectedRows.filter((x) => x.requestID !== row.requestID)
@@ -141,6 +104,7 @@ const TableContent = ({
     }
   }
 
+  // console.log('TableContent rows:', rows)
   return (
     <>
       {!notFound && (
@@ -160,6 +124,7 @@ const TableContent = ({
               const { ...rest } = row
               tableRows = sortTableRowsByHeadCells(Object.keys(rest), headCells)
             }
+
             return (
               <TableRow
                 role='checkbox'
@@ -304,62 +269,7 @@ const TableContent = ({
                         </Grid>
                       </Tooltip>
                     )}
-                    {/* {actions.includes(ACTIONS_TABLE.DELETE) && (
-                          <Tooltip title='Delete' arrow>
-                            <Grid
-                              item
-                              sx={{
-                                cursor:
-                                  row.isActive && actions.includes(ACTIONS_TABLE.SWITCH)
-                                    ? 'not-allowed'
-                                    : 'pointer',
-                              }}
-                            >
-                              <IconButton
-                                onClick={() => {
-                                  if (
-                                    (dRole && dRole[permissionName] && !row.isActive) ||
-                                    (!row.isActive && user.systemAdmin)
-                                    // &&
-                                    // !actions.includes(ACTIONS_TABLE.SWITCH)
-                                  ) {
-                                    handleDelete(row)
-                                  } else {
-                                    showToast(
-                                      'info',
-                                      row.isActive && actions.includes(ACTIONS_TABLE.SWITCH)
-                                        ? COMMON_MESSAGE.Inactive
-                                        : `You don't have permission to delete record`,
-                                    )
-                                  }
-                                  // if (row.isActive && actions.includes(ACTIONS_TABLE.SWITCH)) {
-                                  //   showToast('info', COMMON_MESSAGE.Inactive)
-                                  // } else {
-                                  //   handleDelete(row)
-                                  // }
-                                }}
-                                sx={{
-                                  cursor:
-                                    row.isActive && actions.includes(ACTIONS_TABLE.SWITCH)
-                                      ? 'not-allowed'
-                                      : 'pointer',
-                                }}
-                                disableRipple={row.isActive && actions.includes(ACTIONS_TABLE.SWITCH)}
-                              >
-                                <DeleteIcon
-                                  sx={{
-                                    color:
-                                      (dRole && dRole[permissionName] && !row.isActive) ||
-                                      (!row.isActive && user.systemAdmin)
-                                        ? //? row.isActive && actions.includes(ACTIONS_TABLE.SWITCH)
-                                          theme.palette.mLightOrange.main
-                                        : theme.palette.mMediumGray.main,
-                                  }}
-                                />
-                              </IconButton>
-                            </Grid>
-                          </Tooltip>
-                        )} */}
+
                     {actions.includes(ACTIONS_TABLE.SWITCH) && (
                       <Tooltip title='Switch' arrow>
                         <Grid item>
@@ -403,7 +313,7 @@ const TableContent = ({
                     )}
 
                     {actions.includes(ACTIONS_TABLE.DOWNLOAD_REPORT) &&
-                      row?.currentstatus === 'Closed' && (
+                      row?.status === 'Closed' && (
                         // <a href={`${row?.pdf}`} download={true} target='_blank' rel='noreferrer'>
                         //   <Tooltip title='Download Report' arrow>
                         //     <Grid item>
@@ -432,7 +342,7 @@ const TableContent = ({
                         </Tooltip>
                       )}
 
-                    {actions.includes(ACTIONS_TABLE.PLAY) && row?.currentstatus === 'Closed' && (
+                    {actions.includes(ACTIONS_TABLE.PLAY) && row?.status === 'Closed' && (
                       <Tooltip title='Audio Play' arrow>
                         <Grid item>
                           <IconButton
@@ -440,44 +350,38 @@ const TableContent = ({
                               width: 24, // Adjust width as needed
                               height: 24, // Adjust height as needed
                             }}
-                            onClick={() => handleAudio(row)}
+                            onClick={(e) => handleAudio(row)}
                           >
                             <PlayCircleFilledIcon className='text-blue-main' />
                           </IconButton>
                         </Grid>
                       </Tooltip>
                     )}
+                    {actions.includes(ACTIONS_TABLE.DOWNLOAD_AUDIO) && row?.status === 'Closed' && (
+                      <>
 
-                    {actions.includes(ACTIONS_TABLE.DOWNLOAD_AUDIO) &&
-                      row?.currentstatus === 'Closed' && (
-                        // <a href={`${row?.audio}`} download={true} target='_blank' rel='noreferrer'>
-                        //   <Tooltip title='Download Audio33' arrow>
-                        //     <Grid item>
-                        //       <IconButton
-                        //         sx={{
-                        //           width: 24, // Adjust width as needed
-                        //           height: 24, // Adjust height as needed
-                        //         }}
-                        //         // onClick={() => handleAudioDownload(row)}
-                        //       >
-                        //         <DownloadIcon className='text-blue-main' />
-                        //       </IconButton>
-                        //     </Grid>
-                        //   </Tooltip>
-                        // </a>
-                        <Tooltip title='Download Audio' arrow>
-                          <Grid item>
-                            <IconButton
-                              sx={{ width: 24, height: 24 }}
-                              onClick={(e) => {
-                                DownLoadAudio(row)
-                              }}
-                            >
-                              <DownloadIcon className='text-blue-main' />
-                            </IconButton>
-                          </Grid>
-                        </Tooltip>
-                      )}
+                        {(() => {
+                          const sortedCalls = [...(row?.agentCalls || [])].sort(
+                            (a, b) =>
+                              new Date(b.StartTime).getTime() - new Date(a.StartTime).getTime(),
+                          )
+                          const latestAudioFile = sortedCalls[0]?.AudioFile
+                          console.log(latestAudioFile, 'latestAudioFile')
+
+                          return latestAudioFile ? (
+                            <a href={latestAudioFile} download target='_blank' rel='noreferrer'>
+                              <Tooltip title='Download Audio' arrow>
+                                <Grid item>
+                                  <IconButton sx={{ width: 24, height: 24 }}>
+                                    <DownloadIcon className='text-blue-main' />
+                                  </IconButton>
+                                </Grid>
+                              </Tooltip>
+                            </a>
+                          ) : null
+                        })()}
+                      </>
+                    )}
 
                     {actions.includes(ACTIONS_TABLE.DOWNLOAD) && (
                       <Tooltip title='Download' arrow>
@@ -491,9 +395,8 @@ const TableContent = ({
                     )}
 
                     {JSON.parse(localStorage.getItem('salesRedirect')) &&
-                      ((actions.includes(ACTIONS_TABLE.SCHEDULE) &&
-                        row?.currentstatus === 'Recall') ||
-                        row?.currentstatus === 'Received') && (
+                      ((actions.includes(ACTIONS_TABLE.SCHEDULE) && row?.status === 'Recall') ||
+                        row?.status === 'Received') && (
                         <Tooltip title='Add Schedule' arrow>
                           <Grid item>
                             <IconButton

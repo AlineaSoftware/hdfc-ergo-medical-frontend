@@ -30,6 +30,7 @@ export const enum MEDICAL_DETAILS {
   getMedicalBulkReportZip = '/HDFCERGO/DownloadPdfs/DownloadPdfs',
   getMedicalAudioDownload = '/HDFCERGO/DownloadAudio/DownloadAudio',
   getMSIDetails = '/HDFCERGO/GetMISDetails',
+  Upload_Img_Get = '/upload/media',
 }
 
 export enum MSI {

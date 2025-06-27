@@ -135,36 +135,37 @@ const MedicalDetails2Page = ({
 
   const callDispositionHeadCells: HeadCell[] = [
     {
-      id: 'name',
+      id: 'Disposition',
       label: 'Disposition',
       isSort: false,
       width: 50,
     },
     {
-      id: 'startTime',
+      id: 'StartTime',
       label: 'Start Date',
       isSort: false,
       width: 200,
       type: 'date12hour',
     },
     {
-      id: 'endTime',
+      id: 'EndTime',
       label: 'End Date',
       isSort: false,
       width: 200,
       type: 'date12hour',
     },
     {
-      id: 'callDuration',
+      id: 'CallDuration',
       label: 'Duration',
       isSort: false,
       width: 200,
     },
     {
-      id: 'callDate',
+      id: 'createdAt',
       label: 'Call Back',
       isSort: false,
       width: 150,
+       type: 'date12hour',
     },
   ]
 
@@ -362,7 +363,7 @@ const MedicalDetails2Page = ({
             handleOpen={handleOpen}
             setType={setType}
             setEntity={setEntity}
-            rows={data?.disposition}
+            rows={data?.agentCalls}
             headCells={callDispositionHeadCells}
             controls={controls1 as Controls}
             handleControls={handleControls1}

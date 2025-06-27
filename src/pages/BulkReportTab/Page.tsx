@@ -84,6 +84,8 @@ const BulkReport = ({
   const [handleControls, setHandleControls] = useState<HandleControls>(defaultControls)
   const [selectedRows, setSelectedRows] = useState<any[]>([])
 
+  // console.log('🔵 selectedRows:', selectedRows)
+
   // Set today's date with 12:00 AM
   const getTodayAtMidnight = () => startOfDay(new Date())
 
@@ -181,7 +183,7 @@ const BulkReport = ({
       } else {
         setNotFound([])
         setData(data)
-        setSelectedId(data[0]?.requestID)
+        setSelectedId(data[0]?._id)
         setControls({
           total,
           per_page,
@@ -286,20 +288,11 @@ const BulkReport = ({
     },
   ]
 
-  const requestDetails = selectedRows.map((row) => ({
-    RequestID: String(row.requestID),
-    PdfUrl: row.pdf,
-    InsurerDivisionName: row.insurerDivisionName,
-    ProposalNo: row?.proposalNo,
-    Insured: row?.insured,
-  }))
+ 
 
-  const requestBody = {
-    encryptedData: encryptDetails(JSON.stringify(requestDetails), VITE_APP_SECRET_KEY),
-  }
+  
   const handleDownload = async () => {
     const filePaths = selectedRows.map((item) => item.tranScriptUrl.destination)
-
     const baseURL = VITE_APP_IMAGE_GET
     const token = localStorage.getItem('token') // Replace with your token
 
@@ -310,7 +303,6 @@ const BulkReport = ({
       filePaths.map(async (path) => {
         const fileName = path.split('/').pop() // Just filename
         const fullUrl = `${baseURL}${encodeURIComponent(path)}`
-
         try {
           const response = await axios.get(fullUrl, {
             responseType: 'blob',
@@ -318,7 +310,6 @@ const BulkReport = ({
               Authorization: `Bearer ${token}`, // Adjust header if needed
             },
           })
-
           zip.file(fileName, response.data)
         } catch (error) {
           console.error(`Failed to fetch ${fileName}:`, error)
@@ -333,22 +324,22 @@ const BulkReport = ({
   }
 
   const handleDownLoadAudio = async (item) => {
-    // const requestDetailsAudio = {
-    //   RequestID: String(item.requestID),
-    //   AudioUrl: item?.audio,
-    //   InsurerDivisionName: item?.insurerDivisionName,
-    //   ProposalNo: item?.proposalNo,
-    //   Insured: item?.insured,
-    // }
-    // const intoArray = [requestDetailsAudio]
-    // const requestBody = {
-    //   encryptedData: encryptDetails(JSON.stringify(intoArray), VITE_APP_SECRET_KEY),
-    // }
-    // const a = await axiosInstance.post(MEDICAL_DETAILS.getMedicalAudioDownload, requestBody)
-    // if (a.data !== '') {
-    //   const content = a?.data.match(/https?:\/\/[^\s]+/)[0]
-    //   window.open(content, '_blank')
-    // }
+    const sortedCalls = [...(item?.agentCalls || [])].sort(
+      (a, b) => new Date(b.StartTime).getTime() - new Date(a.StartTime).getTime(),
+    )
+    const latestAudioUrl = sortedCalls[0]?.AudioFile
+    if (!latestAudioUrl) {
+      console.warn('⚠️ No AudioFile found in agentCalls')
+      return
+    }
+
+    // Trigger file download
+    const anchor = document.createElement('a')
+    anchor.href = latestAudioUrl
+    anchor.download = '' // Let browser derive name or you can give it a name
+    anchor.target = '_blank'
+    anchor.rel = 'noreferrer'
+    anchor.click()
   }
 
   return (
@@ -450,7 +441,18 @@ const BulkReport = ({
                 }}
                 type={undefined}
               >
-                <CustomAudioPlayer audioSource={entity?.audio} />
+                <CustomAudioPlayer
+                  audioSource={(() => {
+                    console.log('🔵 selectedId:', selectedId)
+                    const selectedRow = data?.find((x) => x._id === selectedId)
+                    console.log('🟢 selectedRow:', selectedRow)
+                    const sortedCalls = [...(selectedRow?.agentCalls || [])].sort(
+                      (a, b) => new Date(b.StartTime).getTime() - new Date(a.StartTime).getTime(),
+                    )
+                    const latestAudio = sortedCalls[0]?.AudioFile
+                    return latestAudio || ''
+                  })()}
+                />
               </CustomDialog>
             </>
           )}

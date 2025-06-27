@@ -4,7 +4,7 @@ import { formatDate, formatDateForFile, formatMongoDBDateToTime } from '@/utils/
 import { format, parseISO } from 'date-fns'
 import ExcelJS from 'exceljs'
 import axiosInstance from 'src/axiosInstance'
-import { MSI } from 'src/utils/endPoints'
+import { MEDICAL_DETAILS, MSI } from 'src/utils/endPoints'
 
 // export const downloadExcel = (
 //   headCells: { id: string; name: string; isDate?: boolean; isTime?: boolean; isLeave?: boolean }[],
@@ -173,3 +173,27 @@ export const downloadExcel = async (
     loading({ isLoading: false, isPage: false })
   }
 }
+
+export const profileGet = async (filePath: string, filename = 'document.pdf') => {
+  try {
+    const res = await axiosInstance.get(
+      `${MEDICAL_DETAILS.Upload_Img_Get}?file=${encodeURIComponent(filePath)}`,
+      { responseType: 'blob' }
+    )
+
+    const blob = new Blob([res.data], { type: 'application/pdf' })
+    const downloadUrl = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+
+    URL.revokeObjectURL(downloadUrl)
+  } catch (error: any) {
+    console.error('Error downloading PDF:', error)
+  }
+}
+
